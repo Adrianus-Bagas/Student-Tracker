@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: student
+  datasource:
+   url: jdbc:${DB_URL}
+   username: ${DB_USERNAME}
+   password: ${DB_PASSWORD}
+   hikari:
+      maximum-pool-size: 20
+  jpa:
+   hibernate:
+    ddl-auto: update
+   properties:
+    format-sql: true
+   show-sql: true
+server:
+  port: 8081
+app:
+  welcome-text: Hello World, this message from Spring Boot
+  timezone: Asia/Jakarta
+  currency: IDR
+---
+spring:
+  config:
+    activate:
+      on-profile: development
+app:
+  welcome-text: Hello World, this message from development
+---
+spring:
+  config:
+    activate:
+      on-profile: staging
+app:
+  welcome-text: Hello World, this message from staging
+---
+spring:
+  config:
+   activate:
+    on-profile: production
+app:
+ welcome-text: ${WELCOME_TEXT}
+ currency: ${CURRENCY}
