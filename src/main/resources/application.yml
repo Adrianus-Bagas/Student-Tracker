@@ -1,20 +1,8 @@
 spring:
   application:
     name: student
-  datasource:
-   url: jdbc:${DB_URL}
-   username: ${DB_USERNAME}
-   password: ${DB_PASSWORD}
-   hikari:
-      maximum-pool-size: 20
-  jpa:
-   hibernate:
-    ddl-auto: update
-   properties:
-    format-sql: true
-   show-sql: true
 server:
-  port: 8081
+  port: 8080
 app:
   welcome-text: Hello World, this message from Spring Boot
   timezone: Asia/Jakarta
@@ -24,6 +12,20 @@ spring:
   config:
     activate:
       on-profile: development
+  datasource:
+    url: jdbc:${DB_URL_DEV}
+    username: ${DB_USERNAME_DEV}
+    password: ${DB_PASSWORD_DEV}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      format-sql: true
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
 app:
   welcome-text: Hello World, this message from development
 ---
@@ -35,6 +37,18 @@ app:
   welcome-text: Hello World, this message from staging
 ---
 spring:
+  datasource:
+    url: jdbc:${DB_URL_PROD}
+    username: ${DB_USERNAME_PROD}
+    password: ${DB_PASSWORD_PROD}
+    hikari:
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      format-sql: true
+    show-sql: true
   config:
    activate:
     on-profile: production
