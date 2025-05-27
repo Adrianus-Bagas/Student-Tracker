@@ -35,12 +35,12 @@ public class Class extends AbstractBaseEntity {
 	
 	@OneToOne
 	@JoinColumn(name = "teacher_id", nullable = false, referencedColumnName = "id")
-	private Teacher teacher;
+	private User teacher;
 	
 	@ManyToMany
 	@JoinTable(name = "class_student", joinColumns = {
 			@JoinColumn(referencedColumnName = "id", name = "class_id")},
 			inverseJoinColumns = { @JoinColumn(referencedColumnName = "id", name = "student_id") }
 			)
-	private List<Student> students;
+	private List<User> students;
 }

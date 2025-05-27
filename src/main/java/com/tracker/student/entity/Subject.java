@@ -37,7 +37,7 @@ public class Subject extends AbstractBaseEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "teacher_id", nullable = false, referencedColumnName = "id")
-	private Teacher teacher;
+	private User teacher;
 	
 	@OneToMany(mappedBy = "subject")
 	private List<Result> results;

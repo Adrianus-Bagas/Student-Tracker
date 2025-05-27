@@ -34,6 +34,6 @@ public class Attendance extends AbstractBaseEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "student_id", nullable = false, referencedColumnName = "id")
-	private Student student;
+	private User student;
 
 }

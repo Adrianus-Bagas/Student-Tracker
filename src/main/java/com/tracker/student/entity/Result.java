@@ -34,7 +34,7 @@ public class Result extends AbstractBaseEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "student_id", nullable = false, referencedColumnName = "id")
-	private Student student;
+	private User student;
 	
 	@ManyToOne
 	@JoinColumn(name = "subject_id", nullable = false, referencedColumnName = "id")
