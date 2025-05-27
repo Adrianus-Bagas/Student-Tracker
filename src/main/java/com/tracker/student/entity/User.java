@@ -15,6 +15,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -56,9 +57,9 @@ public class User extends AbstractBaseEntity implements UserDetails {
 	//----------Teacher Relation----------
 		
 	//----------Student Relation----------
-	@OneToMany(mappedBy = "student")
-	private List<Attendance> attendances;
-	
+	@ManyToOne()
+	@JoinColumn(name = "class_id", nullable = false, referencedColumnName = "id")
+	private Class studentClass;
 	@OneToMany(mappedBy = "student")
 	private List<Result> results;
 	//----------Student Relation----------

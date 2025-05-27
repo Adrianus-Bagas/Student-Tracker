@@ -9,8 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -37,10 +36,6 @@ public class Class extends AbstractBaseEntity {
 	@JoinColumn(name = "teacher_id", nullable = false, referencedColumnName = "id")
 	private User teacher;
 	
-	@ManyToMany
-	@JoinTable(name = "class_student", joinColumns = {
-			@JoinColumn(referencedColumnName = "id", name = "class_id")},
-			inverseJoinColumns = { @JoinColumn(referencedColumnName = "id", name = "student_id") }
-			)
+	@OneToMany(mappedBy = "studentClass")
 	private List<User> students;
 }

@@ -18,5 +18,11 @@ public abstract class AbstractBaseEntity implements Serializable {
 	
 	@Column(name = "is_deleted", columnDefinition = "boolean default false")
 	private boolean isDeleted;
+	
+	@Column(name = "start_year", nullable = false)
+	private int startYear;
+	
+	@Column(name = "end_year", nullable = false)
+	private int endYear;
 
 }
