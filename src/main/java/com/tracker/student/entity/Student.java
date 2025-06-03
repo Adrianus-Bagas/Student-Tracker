@@ -1,0 +1,40 @@
+package com.tracker.student.entity;
+
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import lombok.Data;
+
+@Data
+@Entity
+@Table(name = "student")
+public class Student extends AbstractBaseEntity {
+	
+	private static final long serialVersionUID = 4278852940272766792L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_generator")
+	@SequenceGenerator(name = "student_generator", sequenceName = "student_id_seq")
+	private Long id;
+	
+	@OneToOne
+	@JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+	private User user;
+	
+	@ManyToOne
+	@JoinColumn(name = "class_id", nullable = false, referencedColumnName = "id")
+	private Class studentClass;
+	
+	@OneToMany(mappedBy = "student")
+	private List<Result> results;
+
+}

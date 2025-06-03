@@ -15,9 +15,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -42,27 +39,14 @@ public class User extends AbstractBaseEntity implements UserDetails {
 	@Column(name = "password", nullable = false)
 	private String password;
 	
+	@Column(name = "email", nullable = false)
+	private String email;
+	
 	@Column(name = "name", nullable = false)
 	private String name;
 	
 	@Column(name = "age", nullable = false)
 	private int age;
-	
-	//----------Teacher Relation----------
-	@OneToMany(mappedBy = "teacher")
-	private List<Subject> subjects;
-	
-	@OneToOne(mappedBy = "teacher")
-	private Class teacherClass;
-	//----------Teacher Relation----------
-		
-	//----------Student Relation----------
-	@ManyToOne()
-	@JoinColumn(name = "class_id", nullable = false, referencedColumnName = "id")
-	private Class studentClass;
-	@OneToMany(mappedBy = "student")
-	private List<Result> results;
-	//----------Student Relation----------
 	
 	@ManyToMany
 	@JoinTable(name = "user_role", joinColumns = {

@@ -34,8 +34,8 @@ public class Class extends AbstractBaseEntity {
 	
 	@OneToOne
 	@JoinColumn(name = "teacher_id", nullable = false, referencedColumnName = "id")
-	private User teacher;
+	private Teacher teacher;
 	
 	@OneToMany(mappedBy = "studentClass")
-	private List<User> students;
+	private List<Student> students;
 }
