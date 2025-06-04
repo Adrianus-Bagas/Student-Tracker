@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.tracker.student.dto.UserDetailResponseDTO;
+import com.tracker.student.exception.ResourceNotFoundException;
 import com.tracker.student.repository.UserRepository;
 import com.tracker.student.service.UserService;
 
@@ -20,7 +21,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findByNomorInduk(username).orElseThrow();
+		return userRepository.findByNomorInduk(username).orElseThrow(()->new ResourceNotFoundException("invalid nomor induk"));
 	}
 
 	@Override
