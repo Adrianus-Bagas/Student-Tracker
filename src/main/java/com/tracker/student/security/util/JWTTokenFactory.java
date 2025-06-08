@@ -22,7 +22,7 @@ public class JWTTokenFactory {
 	
 	public AccessJWTToken createAccessJWTToken(String nomorInduk, Collection<? extends GrantedAuthority> authorities) {
 		Claims claims = Jwts.claims().subject(nomorInduk)
-		.add("scope", authorities.stream().map(a->a.getAuthority()).collect(Collectors.toList())).build();
+		.add("scopes", authorities.stream().map(a->a.getAuthority()).collect(Collectors.toList())).build();
 		LocalDateTime currentTime = LocalDateTime.now();
 		Date currentTimeDate = Date.from(currentTime.atZone(ZoneId.of("Asia/Jakarta")).toInstant());
 		LocalDateTime expireTime = currentTime.plusMinutes(15);

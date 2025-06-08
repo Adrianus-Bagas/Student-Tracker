@@ -10,6 +10,7 @@ public class ApplicationProperties {
 	private String welcomeText;
 	private String timezone;
 	private String currency;
+	private String secretKey;
 	
 	public String getWelcomeText() {
 		return welcomeText;
@@ -28,6 +29,12 @@ public class ApplicationProperties {
 	}
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+	public String getSecretKey() {
+		return secretKey;
+	}
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
 	}
 
 }
