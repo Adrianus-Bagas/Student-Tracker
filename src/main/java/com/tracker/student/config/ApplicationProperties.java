@@ -6,35 +6,51 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "app")
 public class ApplicationProperties {
-	
+
 	private String welcomeText;
 	private String timezone;
 	private String currency;
 	private String secretKey;
-	
+	private int expiredMs;
+
 	public String getWelcomeText() {
 		return welcomeText;
 	}
+
 	public void setWelcomeText(String welcomeText) {
 		this.welcomeText = welcomeText;
 	}
+
 	public String getTimezone() {
 		return timezone;
 	}
+
 	public void setTimezone(String timezone) {
 		this.timezone = timezone;
 	}
+
 	public String getCurrency() {
 		return currency;
 	}
+
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
+
 	public String getSecretKey() {
 		return secretKey;
 	}
+
 	public void setSecretKey(String secretKey) {
 		this.secretKey = secretKey;
+	}
+
+	public int getExpiredMs() {
+		return expiredMs;
+	}
+
+	public void setExpiredMs(int expiredMs) {
+		this.expiredMs = expiredMs;
 	}
 
 }

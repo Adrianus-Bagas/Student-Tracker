@@ -1,11 +1,10 @@
 package com.tracker.student.service;
 
-import org.springframework.security.core.userdetails.UserDetailsService;
+import com.tracker.student.dto.RegisterRequestDTO;
+import com.tracker.student.entity.User;
 
-import com.tracker.student.dto.UserDetailResponseDTO;
+public interface UserService {
 
-public interface UserService extends UserDetailsService {
-	
-	public UserDetailResponseDTO findUserDetail();
+	public User createUser(RegisterRequestDTO dto);
 
 }

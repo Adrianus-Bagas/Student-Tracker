@@ -8,6 +8,7 @@ app:
   timezone: Asia/Jakarta
   currency: IDR
   secret-key: ${SECRET_KEY}
+  expired-ms: 3600000 
 ---
 spring:
   config:
