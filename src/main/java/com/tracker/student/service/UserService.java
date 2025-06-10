@@ -5,6 +5,7 @@ import com.tracker.student.entity.User;
 
 public interface UserService {
 
-	public User createUser(RegisterRequestDTO dto);
+	public void createUser(RegisterRequestDTO dto);
+	public User findByNomorInduk(String nomorInduk);
 
 }

@@ -1,5 +1,7 @@
 package com.tracker.student.controller;
 
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +19,10 @@ import com.tracker.student.dto.RegisterRequestDTO;
 import com.tracker.student.entity.User;
 import com.tracker.student.security.util.JwtUtils;
 import com.tracker.student.service.UserService;
+import com.tracker.student.util.CustomResponseError;
 
+import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -30,8 +35,18 @@ public class AuthController {
 	private final JwtUtils jwtUtils;
 
 	@PostMapping("/register")
-	public User register(@RequestBody RegisterRequestDTO dto) {
-		return userService.createUser(dto);
+	public ResponseEntity<?> register(@RequestBody RegisterRequestDTO dto) {
+		User user = userService.findByNomorInduk(dto.nomorInduk());
+		if(StringUtils.isNotBlank(user.getNomorInduk())) {			
+			return ResponseEntity.badRequest().body(new CustomResponseError("Nomor Induk telah Terdaftar", HttpServletResponse.SC_BAD_REQUEST));
+		}
+		Boolean isStartYearBiggerThanEqualToEndYear = dto.startYear() >= dto.endYear();
+		Boolean isYearDifferenceMoreThanOne = dto.endYear() - dto.startYear() > 1;
+		if (isStartYearBiggerThanEqualToEndYear || isYearDifferenceMoreThanOne) {
+			return ResponseEntity.badRequest().body(new CustomResponseError("Tahun Ajaran tidak Valid", HttpServletResponse.SC_BAD_REQUEST));
+		}
+		userService.createUser(dto);
+		return ResponseEntity.created(URI.create("/register")).build();
 	}
 
 	@PostMapping("/login")

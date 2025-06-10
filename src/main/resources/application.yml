@@ -1,6 +1,20 @@
 spring:
   application:
     name: student
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${USERNAME_EMAIL}
+    password: ${PASSWORD_EMAIL}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
 server:
   port: 8080
 app:
