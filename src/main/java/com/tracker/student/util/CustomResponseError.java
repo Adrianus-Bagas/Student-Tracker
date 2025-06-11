@@ -1,13 +1,20 @@
 package com.tracker.student.util;
 
-import lombok.AllArgsConstructor;
+import java.time.Instant;
+
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class CustomResponseError {
-	
+
 	private String message;
 	private int errorCode;
+	private String timestamp;
+
+	public CustomResponseError(String message, int errorCode) {
+		this.message = message;
+		this.errorCode = errorCode;
+		this.timestamp = Instant.now().toString();
+	}
 
 }

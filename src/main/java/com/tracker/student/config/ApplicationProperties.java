@@ -12,6 +12,7 @@ public class ApplicationProperties {
 	private String currency;
 	private String secretKey;
 	private int expiredMs;
+	private int expiredRefreshToken;
 
 	public String getWelcomeText() {
 		return welcomeText;
@@ -51,6 +52,14 @@ public class ApplicationProperties {
 
 	public void setExpiredMs(int expiredMs) {
 		this.expiredMs = expiredMs;
+	}
+
+	public int getExpiredRefreshToken() {
+		return expiredRefreshToken;
+	}
+
+	public void setExpiredRefreshToken(int expiredRefreshToken) {
+		this.expiredRefreshToken = expiredRefreshToken;
 	}
 
 }

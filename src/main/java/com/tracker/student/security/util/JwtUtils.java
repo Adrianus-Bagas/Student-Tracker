@@ -7,11 +7,9 @@ import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import com.tracker.student.config.ApplicationProperties;
-import com.tracker.student.security.service.UserDetailsImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -49,14 +47,27 @@ public class JwtUtils {
 		return false;
 	}
 
-	public String generateJwtToken(Authentication authentication) {
-		UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-		return Jwts.builder().subject(principal.getUsername()).issuedAt(new Date())
+	public String generateJwtToken(String nomorInduk) {
+		return Jwts.builder().subject(nomorInduk).issuedAt(new Date())
 				.expiration(new Date((new Date()).getTime() + applicationProperties.getExpiredMs()))
+				.signWith(key(), Jwts.SIG.HS256).compact();
+	}
+
+	public String generateJwtRefreshToken(String nomorInduk) {
+		return Jwts.builder().subject(nomorInduk).issuedAt(new Date())
+				.expiration(new Date((new Date()).getTime() + applicationProperties.getExpiredRefreshToken()))
 				.signWith(key(), Jwts.SIG.HS256).compact();
 	}
 
 	public String getUserNameFromJwtToken(String token) {
 		return Jwts.parser().verifyWith(key()).build().parseSignedClaims(token).getPayload().getSubject();
+	}
+
+	public String getCreatedAccessToken(String token) {
+		return Jwts.parser().verifyWith(key()).build().parseSignedClaims(token).getPayload().getIssuedAt().toString();
+	}
+
+	public String getExpiredAccessToken(String token) {
+		return Jwts.parser().verifyWith(key()).build().parseSignedClaims(token).getPayload().getExpiration().toString();
 	}
 }
