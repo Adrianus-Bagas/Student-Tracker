@@ -1,4 +1,4 @@
-package com.tracker.student.dto;
+package com.tracker.student.dto.response;
 
 import java.io.Serializable;
 

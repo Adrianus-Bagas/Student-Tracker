@@ -1,5 +1,8 @@
 package com.tracker.student.service.impl;
 
+import java.util.Date;
+import java.util.UUID;
+
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +14,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.tracker.student.dto.LoginRequestDTO;
-import com.tracker.student.dto.LoginResponseDTO;
-import com.tracker.student.dto.RefreshTokenRequestDTO;
-import com.tracker.student.dto.RegisterRequestDTO;
+import com.tracker.student.config.ApplicationProperties;
+import com.tracker.student.dto.request.ChangePasswordFromEmailDTO;
+import com.tracker.student.dto.request.ForgotPasswordRequestDTO;
+import com.tracker.student.dto.request.LoginRequestDTO;
+import com.tracker.student.dto.request.RefreshTokenRequestDTO;
+import com.tracker.student.dto.request.RegisterRequestDTO;
+import com.tracker.student.dto.response.LoginResponseDTO;
 import com.tracker.student.entity.User;
 import com.tracker.student.exception.BadRequestException;
 import com.tracker.student.repository.UserRepository;
@@ -35,6 +41,7 @@ public class AuthServiceImpl implements AuthService {
 	private final EmailService emailService;
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtils jwtUtils;
+	private final ApplicationProperties applicationProperties;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -101,6 +108,49 @@ public class AuthServiceImpl implements AuthService {
 		String expiredAt = jwtUtils.getExpiredAccessToken(accessToken);
 		return new LoginResponseDTO(accessToken, nomorInduk, refreshToken, createdAt, expiredAt);
 
+	}
+
+	@Override
+	public void forgotPassword(ForgotPasswordRequestDTO dto) {
+		User user = userRepository.findByNomorInduk(dto.nomorInduk()).orElse(new User());
+		if (StringUtils.isBlank(user.getNomorInduk())) {
+			throw new BadRequestException("User tidak ditemukan");
+		}
+		if (!user.getEmail().matches(dto.email())) {
+			throw new BadRequestException("Email yang digunakan tidak sesuai");
+		}
+		String forgotPasswordCode = UUID.randomUUID().toString();
+		Date now = new Date();
+		Date nowPlusTenMinutes = new Date(now.getTime() + applicationProperties.getExpiredForgotPassword());
+		user.setForgotPasswordCode(forgotPasswordCode);
+		user.setForgotPasswordCodeExpiredAt(nowPlusTenMinutes);
+		userRepository.save(user);
+		emailService.sendForgotPasswordURL(dto.email(), forgotPasswordCode);
+	}
+
+	@Override
+	public void changePasswordFromEmail(ChangePasswordFromEmailDTO dto) {
+		User user = userRepository.findByForgotPasswordCode(dto.code()).orElse(new User());
+		if (StringUtils.isBlank(user.getNomorInduk())) {
+			throw new BadRequestException("Link sudah kedaluwarsa");
+		}
+		Date now = new Date();
+		if (now.getTime() > user.getForgotPasswordCodeExpiredAt().getTime()) {
+			user.setForgotPasswordCode(null);
+			user.setForgotPasswordCodeExpiredAt(null);
+			userRepository.save(user);
+			throw new BadRequestException("Link sudah kedaluwarsa");
+		}
+		if (!passwordEncoder.matches(dto.oldPassword(), user.getPassword())) {
+			throw new BadRequestException("Password lama tidak sesuai");
+		}
+		if (!dto.newPassword().matches(dto.confirmNewPassword())) {
+			throw new BadRequestException("Mohon password baru dan konfirmasi password baru disamakan");
+		}
+		user.setPassword(passwordEncoder.encode(dto.newPassword()));
+		user.setForgotPasswordCode(null);
+		user.setForgotPasswordCodeExpiredAt(null);
+		userRepository.save(user);
 	}
 
 }

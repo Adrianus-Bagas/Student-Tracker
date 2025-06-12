@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tracker.student.dto.LoginRequestDTO;
-import com.tracker.student.dto.LoginResponseDTO;
-import com.tracker.student.dto.RefreshTokenRequestDTO;
-import com.tracker.student.dto.RegisterRequestDTO;
+import com.tracker.student.dto.request.ChangePasswordFromEmailDTO;
+import com.tracker.student.dto.request.ForgotPasswordRequestDTO;
+import com.tracker.student.dto.request.LoginRequestDTO;
+import com.tracker.student.dto.request.RefreshTokenRequestDTO;
+import com.tracker.student.dto.request.RegisterRequestDTO;
+import com.tracker.student.dto.response.LoginResponseDTO;
 import com.tracker.student.service.AuthService;
 
 import lombok.AllArgsConstructor;
@@ -40,6 +42,20 @@ public class AuthController {
 			throws AuthenticationException {
 		LoginResponseDTO response = authService.refreshToken(dto);
 		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/forgot-password")
+	public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPasswordRequestDTO dto)
+			throws AuthenticationException {
+		authService.forgotPassword(dto);
+		return ResponseEntity.created(URI.create("/forgot-password")).build();
+	}
+
+	@PostMapping("/change-password-from-email")
+	public ResponseEntity<Void> changePasswordFromEmail(@RequestBody ChangePasswordFromEmailDTO dto)
+			throws AuthenticationException {
+		authService.changePasswordFromEmail(dto);
+		return ResponseEntity.created(URI.create("/change-password-from-email")).build();
 	}
 
 }

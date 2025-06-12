@@ -13,6 +13,7 @@ public class ApplicationProperties {
 	private String secretKey;
 	private int expiredMs;
 	private int expiredRefreshToken;
+	private int expiredForgotPassword;
 
 	public String getWelcomeText() {
 		return welcomeText;
@@ -60,6 +61,14 @@ public class ApplicationProperties {
 
 	public void setExpiredRefreshToken(int expiredRefreshToken) {
 		this.expiredRefreshToken = expiredRefreshToken;
+	}
+
+	public int getExpiredForgotPassword() {
+		return expiredForgotPassword;
+	}
+
+	public void setExpiredForgotPassword(int expiredForgotPassword) {
+		this.expiredForgotPassword = expiredForgotPassword;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.tracker.student.entity;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +41,11 @@ public class User extends AbstractBaseEntity {
 
 	@Column(name = "role", nullable = false)
 	private String role;
+
+	@Column(name = "forgot_password_code", nullable = true, unique = true)
+	private String forgotPasswordCode;
+
+	@Column(name = "forgot_password_code_expired_at", nullable = true)
+	private Date forgotPasswordCodeExpiredAt;
 
 }

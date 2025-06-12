@@ -1,4 +1,4 @@
-package com.tracker.student.dto;
+package com.tracker.student.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
