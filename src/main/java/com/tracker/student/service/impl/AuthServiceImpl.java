@@ -21,9 +21,13 @@ import com.tracker.student.dto.request.LoginRequestDTO;
 import com.tracker.student.dto.request.RefreshTokenRequestDTO;
 import com.tracker.student.dto.request.RegisterRequestDTO;
 import com.tracker.student.dto.response.LoginResponseDTO;
+import com.tracker.student.entity.Student;
 import com.tracker.student.entity.Teacher;
 import com.tracker.student.entity.User;
+import com.tracker.student.entity.Class;
 import com.tracker.student.exception.BadRequestException;
+import com.tracker.student.repository.ClassRepository;
+import com.tracker.student.repository.StudentRepository;
 import com.tracker.student.repository.TeacherRepository;
 import com.tracker.student.repository.UserRepository;
 import com.tracker.student.security.util.JwtUtils;
@@ -41,6 +45,8 @@ public class AuthServiceImpl implements AuthService {
 
 	private final UserRepository userRepository;
 	private final TeacherRepository teacherRepository;
+	private final StudentRepository studentRepository;
+	private final ClassRepository classRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final EmailService emailService;
 	private final AuthenticationManager authenticationManager;
@@ -75,6 +81,16 @@ public class AuthServiceImpl implements AuthService {
 				teacher.setEndYear(dto.endYear());
 				teacher.setUser(user);
 				teacherRepository.save(teacher);
+			}
+			if (dto.role().equalsIgnoreCase("STUDENT")) {
+				Student student = new Student();
+				Class classObject = classRepository.findById(dto.classId())
+						.orElseThrow(() -> new BadRequestException("Kelas tidak tersedia"));
+				student.setStartYear(dto.startYear());
+				student.setEndYear(dto.endYear());
+				student.setUser(user);
+				student.setStudentClass(classObject);
+				studentRepository.save(student);
 			}
 			emailService.sendCredential(user.getEmail(), dto.nomorInduk(), password);
 		} catch (Exception e) {
