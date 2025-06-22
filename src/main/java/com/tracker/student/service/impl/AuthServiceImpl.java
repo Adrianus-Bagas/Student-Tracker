@@ -29,6 +29,7 @@ import com.tracker.student.repository.UserRepository;
 import com.tracker.student.security.util.JwtUtils;
 import com.tracker.student.service.AuthService;
 import com.tracker.student.service.EmailService;
+import com.tracker.student.util.AcademicYearChecker;
 import com.tracker.student.util.GenerateRandomPassword;
 
 import io.micrometer.common.util.StringUtils;
@@ -50,15 +51,11 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public void createUser(RegisterRequestDTO dto) {
+		AcademicYearChecker academicYearChecker = new AcademicYearChecker();
 		GenerateRandomPassword generatedPassword = new GenerateRandomPassword();
 		String password = generatedPassword.randomPassword(8);
 		User user = userRepository.findByNomorInduk(dto.nomorInduk()).orElse(new User());
-		Boolean isStartYearBiggerThanEqualToEndYear = Integer.parseInt(dto.startYear()) >= Integer
-				.parseInt(dto.endYear());
-		Boolean isYearDifferenceMoreThanOne = Integer.parseInt(dto.endYear()) - Integer.parseInt(dto.startYear()) > 1;
-		if (isStartYearBiggerThanEqualToEndYear || isYearDifferenceMoreThanOne) {
-			throw new BadRequestException("Tahun Ajaran tidak Valid");
-		}
+		academicYearChecker.checkAcademicYearValidity(dto.startYear(), dto.endYear());
 		if (!StringUtils.isBlank(user.getNomorInduk())) {
 			throw new BadRequestException("Nomor Induk sudah Terdaftar");
 		}
