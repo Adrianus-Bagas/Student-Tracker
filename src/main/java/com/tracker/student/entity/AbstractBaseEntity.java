@@ -10,19 +10,19 @@ import lombok.Data;
 @Data
 @MappedSuperclass
 public abstract class AbstractBaseEntity implements Serializable {
-	
+
 	private static final long serialVersionUID = 2463509211225598151L;
 
 	@Column(name = "secure_id", nullable = false, unique = true)
 	private String secureId = UUID.randomUUID().toString();
-	
+
 	@Column(name = "is_deleted", columnDefinition = "boolean default false")
 	private boolean isDeleted;
-	
+
 	@Column(name = "start_year", nullable = false)
-	private int startYear;
-	
+	private String startYear;
+
 	@Column(name = "end_year", nullable = false)
-	private int endYear;
+	private String endYear;
 
 }

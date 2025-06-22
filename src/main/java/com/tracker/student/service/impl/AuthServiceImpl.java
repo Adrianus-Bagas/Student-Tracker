@@ -21,8 +21,10 @@ import com.tracker.student.dto.request.LoginRequestDTO;
 import com.tracker.student.dto.request.RefreshTokenRequestDTO;
 import com.tracker.student.dto.request.RegisterRequestDTO;
 import com.tracker.student.dto.response.LoginResponseDTO;
+import com.tracker.student.entity.Teacher;
 import com.tracker.student.entity.User;
 import com.tracker.student.exception.BadRequestException;
+import com.tracker.student.repository.TeacherRepository;
 import com.tracker.student.repository.UserRepository;
 import com.tracker.student.security.util.JwtUtils;
 import com.tracker.student.service.AuthService;
@@ -37,6 +39,7 @@ import lombok.AllArgsConstructor;
 public class AuthServiceImpl implements AuthService {
 
 	private final UserRepository userRepository;
+	private final TeacherRepository teacherRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final EmailService emailService;
 	private final AuthenticationManager authenticationManager;
@@ -50,8 +53,9 @@ public class AuthServiceImpl implements AuthService {
 		GenerateRandomPassword generatedPassword = new GenerateRandomPassword();
 		String password = generatedPassword.randomPassword(8);
 		User user = userRepository.findByNomorInduk(dto.nomorInduk()).orElse(new User());
-		Boolean isStartYearBiggerThanEqualToEndYear = dto.startYear() >= dto.endYear();
-		Boolean isYearDifferenceMoreThanOne = dto.endYear() - dto.startYear() > 1;
+		Boolean isStartYearBiggerThanEqualToEndYear = Integer.parseInt(dto.startYear()) >= Integer
+				.parseInt(dto.endYear());
+		Boolean isYearDifferenceMoreThanOne = Integer.parseInt(dto.endYear()) - Integer.parseInt(dto.startYear()) > 1;
 		if (isStartYearBiggerThanEqualToEndYear || isYearDifferenceMoreThanOne) {
 			throw new BadRequestException("Tahun Ajaran tidak Valid");
 		}
@@ -68,6 +72,13 @@ public class AuthServiceImpl implements AuthService {
 			user.setStartYear(dto.startYear());
 			user.setEndYear(dto.endYear());
 			userRepository.save(user);
+			if (dto.role().equalsIgnoreCase("TEACHER")) {
+				Teacher teacher = new Teacher();
+				teacher.setStartYear(dto.startYear());
+				teacher.setEndYear(dto.endYear());
+				teacher.setUser(user);
+				teacherRepository.save(teacher);
+			}
 			emailService.sendCredential(user.getEmail(), dto.nomorInduk(), password);
 		} catch (Exception e) {
 			logger.error("Failed to save user");
