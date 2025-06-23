@@ -9,24 +9,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tracker.student.dto.request.CreateClassRequestDTO;
-import com.tracker.student.service.ClassService;
+import com.tracker.student.dto.request.CreateSubjectRequestDTO;
+import com.tracker.student.service.SubjectService;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/class")
+@RequestMapping("/subject")
 @AllArgsConstructor
 @PreAuthorize("hasAuthority('TU')")
-public class ClassController {
+public class SubjectController {
 
-	private final ClassService classService;
+	private final SubjectService subjectService;
 
 	@PostMapping
-	public ResponseEntity<Void> createClass(@Valid @RequestBody CreateClassRequestDTO dto) {
-		classService.createClass(dto);
-		return ResponseEntity.created(URI.create("/class")).build();
+	public ResponseEntity<Void> createSubject(@Valid @RequestBody CreateSubjectRequestDTO dto) {
+		subjectService.createSubject(dto);
+		return ResponseEntity.created(URI.create("/subject")).build();
 	}
 
 }
