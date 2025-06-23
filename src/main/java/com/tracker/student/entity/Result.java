@@ -33,6 +33,9 @@ public class Result extends AbstractBaseEntity {
 	@Column(name = "semester", nullable = false)
 	private int semester;
 
+	@Column(name = "type", nullable = false)
+	private String type;
+
 	@ManyToOne
 	@JoinColumn(name = "student_id", nullable = false, referencedColumnName = "id")
 	private Student student;
