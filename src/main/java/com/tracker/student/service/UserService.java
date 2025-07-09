@@ -1,5 +1,6 @@
 package com.tracker.student.service;
 
+import com.tracker.student.dto.request.ChangePasswordFromProfileRequestDTO;
 import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -18,5 +19,7 @@ public interface UserService {
 	public void updateUser(String id, UpdateUserRequestDTO dto);
 
 	public void deleteUser(String id);
+
+	public void changePasswordFromProfile(ChangePasswordFromProfileRequestDTO dto);
 
 }

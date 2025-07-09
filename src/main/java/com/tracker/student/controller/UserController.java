@@ -1,16 +1,20 @@
 package com.tracker.student.controller;
 
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tracker.student.dto.request.ChangePasswordFromProfileRequestDTO;
 import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -53,6 +57,12 @@ public class UserController {
 	public ResponseEntity<Void> deleteUser(@PathVariable String id) {
 		userService.deleteUser(id);
 		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/v1/change-password-from-profile")
+	public ResponseEntity<Void> changePasswordFromProfile(@Valid @RequestBody ChangePasswordFromProfileRequestDTO dto) {
+		userService.changePasswordFromProfile(dto);
+		return ResponseEntity.created(URI.create("/change-password-from-profile")).build();
 	}
 
 }

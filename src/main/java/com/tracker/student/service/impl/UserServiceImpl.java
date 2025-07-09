@@ -9,9 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tracker.student.dto.request.ChangePasswordFromProfileRequestDTO;
 import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -31,6 +33,7 @@ import lombok.AllArgsConstructor;
 public class UserServiceImpl implements UserService {
 
 	private UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -98,6 +101,20 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void deleteUser(String id) {
 		userRepository.deleteBySecureId(id);
+	}
+
+	@Override
+	public void changePasswordFromProfile(ChangePasswordFromProfileRequestDTO dto) {
+		User user = userRepository.findByNomorInduk(dto.nomorInduk())
+				.orElseThrow(() -> new BadRequestException("User tidak Ditemukan"));
+		if (!passwordEncoder.matches(dto.oldPassword(), user.getPassword())) {
+			throw new BadRequestException("Password lama tidak sesuai");
+		}
+		if (!dto.newPassword().matches(dto.confirmNewPassword())) {
+			throw new BadRequestException("Mohon password baru dan konfirmasi password baru disamakan");
+		}
+		user.setPassword(passwordEncoder.encode(dto.newPassword()));
+		userRepository.save(user);
 	}
 
 }

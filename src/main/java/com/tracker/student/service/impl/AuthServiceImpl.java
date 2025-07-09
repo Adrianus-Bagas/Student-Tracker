@@ -136,10 +136,8 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public void forgotPassword(ForgotPasswordRequestDTO dto) {
-		User user = userRepository.findByNomorInduk(dto.nomorInduk()).orElse(new User());
-		if (StringUtils.isBlank(user.getNomorInduk())) {
-			throw new BadRequestException("User tidak ditemukan");
-		}
+		User user = userRepository.findByNomorInduk(dto.nomorInduk())
+				.orElseThrow(() -> new BadRequestException("User tidak ditemukan"));
 		if (!user.getEmail().matches(dto.email())) {
 			throw new BadRequestException("Email yang digunakan tidak sesuai");
 		}
@@ -154,10 +152,8 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public void changePasswordFromEmail(ChangePasswordFromEmailDTO dto) {
-		User user = userRepository.findByForgotPasswordCode(dto.code()).orElse(new User());
-		if (StringUtils.isBlank(user.getNomorInduk())) {
-			throw new BadRequestException("Link sudah kedaluwarsa");
-		}
+		User user = userRepository.findByForgotPasswordCode(dto.code())
+				.orElseThrow(() -> new BadRequestException("Link sudah kedaluwarsa"));
 		Date now = new Date();
 		if (now.getTime() > user.getForgotPasswordCodeExpiredAt().getTime()) {
 			user.setForgotPasswordCode(null);
