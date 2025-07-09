@@ -3,12 +3,15 @@ package com.tracker.student.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
 import com.tracker.student.dto.response.UserListResponseDTO;
@@ -16,6 +19,7 @@ import com.tracker.student.entity.User;
 import com.tracker.student.exception.BadRequestException;
 import com.tracker.student.repository.UserRepository;
 import com.tracker.student.service.UserService;
+import com.tracker.student.util.AcademicYearChecker;
 import com.tracker.student.util.PaginationUtil;
 
 import io.micrometer.common.util.StringUtils;
@@ -26,6 +30,8 @@ import lombok.AllArgsConstructor;
 public class UserServiceImpl implements UserService {
 
 	private UserRepository userRepository;
+
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Override
 	public User findByNomorInduk(String nomorInduk) {
@@ -65,6 +71,26 @@ public class UserServiceImpl implements UserService {
 		dto.setId(user.getSecureId());
 		dto.setStartYear(user.getStartYear());
 		return dto;
+	}
+
+	@Override
+	public void updateUser(String id, UpdateUserRequestDTO dto) {
+		AcademicYearChecker academicYearChecker = new AcademicYearChecker();
+		User user = userRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("User tidak ditemukan"));
+		academicYearChecker.checkAcademicYearValidity(dto.startYear(), dto.endYear());
+		try {
+			user.setEmail(dto.email());
+			user.setName(dto.name());
+			user.setAge(dto.age());
+			user.setStartYear(dto.startYear());
+			user.setEndYear(dto.endYear());
+			user.setNomorInduk(dto.nomorInduk());
+			userRepository.save(user);
+		} catch (Exception e) {
+			logger.error("Failed to update user");
+			throw new BadRequestException("gagal update user");
+		}
 	}
 
 }

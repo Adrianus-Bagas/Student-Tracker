@@ -1,5 +1,6 @@
 package com.tracker.student.service;
 
+import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
 import com.tracker.student.dto.response.UserListResponseDTO;
@@ -13,5 +14,7 @@ public interface UserService {
 			String name);
 
 	public UserInfoResponseDTO findUserBySecureId(String secureId);
+
+	public void updateUser(String id, UpdateUserRequestDTO dto);
 
 }
