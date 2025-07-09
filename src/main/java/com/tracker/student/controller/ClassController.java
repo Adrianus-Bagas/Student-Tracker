@@ -23,7 +23,7 @@ public class ClassController {
 
 	private final ClassService classService;
 
-	@PostMapping
+	@PostMapping("/v1/create")
 	public ResponseEntity<Void> createClass(@Valid @RequestBody CreateClassRequestDTO dto) {
 		classService.createClass(dto);
 		return ResponseEntity.created(URI.create("/class")).build();

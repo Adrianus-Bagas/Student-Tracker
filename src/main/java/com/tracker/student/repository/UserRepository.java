@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public Optional<User> findByForgotPasswordCode(String forgotPasswordCode);
 
 	public Page<User> findByNameLikeIgnoreCase(String name, Pageable pageable);
+
+	public Optional<User> findBySecureId(String secureId);
 }

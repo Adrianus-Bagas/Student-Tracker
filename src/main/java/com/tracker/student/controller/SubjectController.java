@@ -23,7 +23,7 @@ public class SubjectController {
 
 	private final SubjectService subjectService;
 
-	@PostMapping
+	@PostMapping("/v1/create")
 	public ResponseEntity<Void> createSubject(@Valid @RequestBody CreateSubjectRequestDTO dto) {
 		subjectService.createSubject(dto);
 		return ResponseEntity.created(URI.create("/subject")).build();

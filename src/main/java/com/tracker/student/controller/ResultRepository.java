@@ -23,7 +23,7 @@ public class ResultRepository {
 
 	private final ResultService resultService;
 
-	@PostMapping
+	@PostMapping("/v1/create")
 	public ResponseEntity<Void> createResult(@Valid @RequestBody CreateResultRequestDTO dto) {
 		resultService.createResult(dto);
 		return ResponseEntity.created(URI.create("/result")).build();

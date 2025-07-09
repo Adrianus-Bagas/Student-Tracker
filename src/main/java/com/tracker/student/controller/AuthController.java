@@ -27,32 +27,32 @@ public class AuthController {
 
 	private final AuthService authService;
 
-	@PostMapping("/register")
+	@PostMapping("/v1/register")
 	public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequestDTO dto) {
 		authService.createUser(dto);
 		return ResponseEntity.created(URI.create("/register")).build();
 	}
 
-	@PostMapping("/login")
+	@PostMapping("/v1/login")
 	public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
 		return ResponseEntity.ok().body(authService.authenticate(dto));
 	}
 
-	@PostMapping("/refresh-token")
+	@PostMapping("/v1/refresh-token")
 	public ResponseEntity<LoginResponseDTO> refreshToken(@Valid @RequestBody RefreshTokenRequestDTO dto)
 			throws AuthenticationException {
 		LoginResponseDTO response = authService.refreshToken(dto);
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("/forgot-password")
+	@PostMapping("/v1/forgot-password")
 	public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequestDTO dto)
 			throws AuthenticationException {
 		authService.forgotPassword(dto);
 		return ResponseEntity.created(URI.create("/forgot-password")).build();
 	}
 
-	@PostMapping("/change-password-from-email")
+	@PostMapping("/v1/change-password-from-email")
 	public ResponseEntity<Void> changePasswordFromEmail(@Valid @RequestBody ChangePasswordFromEmailDTO dto)
 			throws AuthenticationException {
 		authService.changePasswordFromEmail(dto);
