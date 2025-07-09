@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	public Page<User> findByNameLikeIgnoreCase(String name, Pageable pageable);
 
 	public Optional<User> findBySecureId(String secureId);
+
+	public void deleteBySecureId(String secureId);
 }

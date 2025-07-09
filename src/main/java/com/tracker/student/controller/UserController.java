@@ -2,6 +2,7 @@ package com.tracker.student.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,6 +46,12 @@ public class UserController {
 	@PutMapping("/v1/update/{id}")
 	public ResponseEntity<Void> updateUser(@PathVariable String id, @Valid @RequestBody UpdateUserRequestDTO dto) {
 		userService.updateUser(id, dto);
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/v1/delete/{id}")
+	public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+		userService.deleteUser(id);
 		return ResponseEntity.ok().build();
 	}
 

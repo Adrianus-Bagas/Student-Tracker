@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
@@ -91,6 +92,12 @@ public class UserServiceImpl implements UserService {
 			logger.error("Failed to update user");
 			throw new BadRequestException("gagal update user");
 		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteUser(String id) {
+		userRepository.deleteBySecureId(id);
 	}
 
 }
