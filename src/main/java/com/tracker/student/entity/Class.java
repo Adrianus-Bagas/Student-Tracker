@@ -2,8 +2,10 @@ package com.tracker.student.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,25 +19,23 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "class", indexes = {
-		@Index(name = "idx_secure_id_class", columnList = "secure_id")
-})
+@Table(name = "class", indexes = { @Index(name = "idx_secure_id_class", columnList = "secure_id") })
 public class Class extends AbstractBaseEntity {
 
 	private static final long serialVersionUID = -2311074953803080669L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_generator")
 	@SequenceGenerator(name = "class_generator", sequenceName = "class_id_seq")
 	private Long id;
-	
+
 	@Column(name = "name", nullable = false)
 	private String name;
-	
+
 	@OneToOne
-	@JoinColumn(name = "teacher_id", nullable = false, referencedColumnName = "id")
+	@JoinColumn(name = "teacher_id", referencedColumnName = "id")
 	private Teacher teacher;
-	
+
 	@OneToMany(mappedBy = "studentClass")
 	private List<Student> students;
 }

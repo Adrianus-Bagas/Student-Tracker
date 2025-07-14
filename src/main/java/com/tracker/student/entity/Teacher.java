@@ -3,6 +3,7 @@ package com.tracker.student.entity;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,19 +20,19 @@ import lombok.Data;
 public class Teacher extends AbstractBaseEntity {
 
 	private static final long serialVersionUID = -5188181620775486650L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacher_generator")
 	@SequenceGenerator(name = "teacher_generator", sequenceName = "teacher_id_seq")
 	private Long id;
-	
+
 	@OneToOne
 	@JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
 	private User user;
-	
-	@OneToMany(mappedBy = "teacher")
-	private List<Subject> subjects;
-	
+
 	@OneToOne(mappedBy = "teacher")
 	private Class teacherClass;
+
+	@OneToMany(mappedBy = "teacher")
+	private List<Subject> subjects;
 }
