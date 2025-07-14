@@ -2,6 +2,9 @@ package com.tracker.student.entity;
 
 import java.util.List;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,6 +22,8 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "student")
+@SQLDelete(sql = "UPDATE student set is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted=false")
 public class Student extends AbstractBaseEntity {
 
 	private static final long serialVersionUID = 4278852940272766792L;

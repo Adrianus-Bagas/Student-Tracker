@@ -8,5 +8,7 @@ public interface StudentService {
 	public StudentDetailResponseDTO findStudentBySecureId(String id);
 
 	public void updateStudent(UpdateStudentRequestDTO dto, String id);
+	
+	public void deleteStudent(String id);
 
 }

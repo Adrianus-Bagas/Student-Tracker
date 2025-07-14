@@ -1,6 +1,7 @@
 package com.tracker.student.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,8 +29,14 @@ public class StudentController {
 	}
 
 	@PutMapping("/v1/update/{id}")
-	public ResponseEntity<Void> updateUser(@PathVariable String id, @Valid @RequestBody UpdateStudentRequestDTO dto) {
+	public ResponseEntity<Void> updateStudent(@PathVariable String id, @Valid @RequestBody UpdateStudentRequestDTO dto) {
 		studentService.updateStudent(dto, id);
+		return ResponseEntity.ok().build();
+	}
+	
+	@DeleteMapping("/v1/delete/{id}")
+	public ResponseEntity<Void> deleteStudent(@PathVariable String id) {
+		studentService.deleteStudent(id);
 		return ResponseEntity.ok().build();
 	}
 

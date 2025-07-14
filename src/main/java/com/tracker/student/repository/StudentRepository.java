@@ -9,5 +9,7 @@ import com.tracker.student.entity.Student;
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
 	public Optional<Student> findBySecureId(String secureId);
+	
+	public void deleteBySecureId(String id);
 
 }
