@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/result")
 @AllArgsConstructor
 @PreAuthorize("hasAuthority('TEACHER')")
-public class ResultRepository {
+public class ResultController {
 
 	private final ResultService resultService;
 

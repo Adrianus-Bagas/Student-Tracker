@@ -9,7 +9,7 @@ import com.tracker.student.entity.Result;
 import com.tracker.student.entity.Student;
 import com.tracker.student.entity.Subject;
 import com.tracker.student.exception.BadRequestException;
-import com.tracker.student.repository.StudentResultRepository;
+import com.tracker.student.repository.ResultRepository;
 import com.tracker.student.repository.StudentRepository;
 import com.tracker.student.repository.SubjectRepository;
 import com.tracker.student.service.ResultService;
@@ -23,7 +23,7 @@ public class ResultServiceImpl implements ResultService {
 
 	private final SubjectRepository subjectRepository;
 	private final StudentRepository studentRepository;
-	private final StudentResultRepository resultRepository;
+	private final ResultRepository resultRepository;
 
 	private static final Logger logger = LoggerFactory.getLogger(ResultServiceImpl.class);
 

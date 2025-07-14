@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.tracker.student.entity.Result;
 
-public interface StudentResultRepository extends JpaRepository<Result, Long> {
+public interface ResultRepository extends JpaRepository<Result, Long> {
 
 }
