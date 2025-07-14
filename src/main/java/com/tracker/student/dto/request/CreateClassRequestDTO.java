@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record CreateClassRequestDTO(@NotBlank String startYear, @NotBlank String endYear, @NotBlank String name,
-		@Positive Long teacherId) {
+public record CreateClassRequestDTO(@NotBlank String startYear, @NotBlank String endYear, @NotBlank String name) {
 
 }

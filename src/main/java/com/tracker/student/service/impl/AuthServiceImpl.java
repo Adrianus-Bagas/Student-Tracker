@@ -77,9 +77,12 @@ public class AuthServiceImpl implements AuthService {
 			userRepository.save(user);
 			if (dto.role().equalsIgnoreCase("TEACHER")) {
 				Teacher teacher = new Teacher();
+				Class classObject = classRepository.findById(dto.classId())
+						.orElseThrow(() -> new BadRequestException("Kelas tidak tersedia"));
 				teacher.setStartYear(dto.startYear());
 				teacher.setEndYear(dto.endYear());
 				teacher.setUser(user);
+				teacher.setTeacherClass(classObject);
 				teacherRepository.save(teacher);
 			}
 			if (dto.role().equalsIgnoreCase("STUDENT")) {

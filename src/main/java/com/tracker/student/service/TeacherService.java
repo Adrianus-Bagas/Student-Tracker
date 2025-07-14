@@ -6,4 +6,6 @@ public interface TeacherService {
 
 	public TeacherDetailResponseDTO findTeacherBySecureId(String id);
 
+	public void deleteTeacher(String id);
+
 }

@@ -10,4 +10,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
 	public Optional<Teacher> findBySecureId(String secureId);
 
+	public void deleteBySecureId(String secureId);
+
 }

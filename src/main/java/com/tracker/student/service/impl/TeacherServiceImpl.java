@@ -1,6 +1,7 @@
 package com.tracker.student.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tracker.student.dto.response.TeacherDetailResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -40,6 +41,12 @@ public class TeacherServiceImpl implements TeacherService {
 		teacherDTO.setUser(userDTO);
 
 		return teacherDTO;
+	}
+
+	@Override
+	@Transactional
+	public void deleteTeacher(String id) {
+		teacherRepository.deleteBySecureId(id);
 	}
 
 }
