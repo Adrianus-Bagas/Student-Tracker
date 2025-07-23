@@ -11,4 +11,6 @@ public interface ClassRepository extends JpaRepository<Class, Long> {
 
 	public Optional<Class> findBySecureId(String secureId);
 
+	public void deleteBySecureId(String secureId);
+
 }

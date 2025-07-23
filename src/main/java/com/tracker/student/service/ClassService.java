@@ -11,4 +11,6 @@ public interface ClassService {
 
 	public void updateClass(CreateUpdateClassRequestDTO dto, String id);
 
+	public void deleteClass(String id);
+
 }

@@ -3,6 +3,7 @@ package com.tracker.student.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tracker.student.dto.request.CreateUpdateClassRequestDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
@@ -69,6 +70,12 @@ public class ClassServiceImpl implements ClassService {
 			logger.error(e.getMessage());
 			throw new BadRequestException("gagal update kelas");
 		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteClass(String id) {
+		classRepository.deleteBySecureId(id);
 	}
 
 }
