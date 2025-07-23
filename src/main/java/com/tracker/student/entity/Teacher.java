@@ -31,7 +31,7 @@ public class Teacher extends AbstractBaseEntity {
 	@SequenceGenerator(name = "teacher_generator", sequenceName = "teacher_id_seq")
 	private Long id;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
 	private User user;
 

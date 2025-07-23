@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -52,5 +53,11 @@ public class User extends AbstractBaseEntity {
 
 	@Column(name = "forgot_password_code_expired_at", nullable = true)
 	private Date forgotPasswordCodeExpiredAt;
+	
+	@OneToOne(mappedBy = "user")
+	private Student student;
+	
+	@OneToOne(mappedBy = "user")
+	private Teacher teacher;
 
 }
