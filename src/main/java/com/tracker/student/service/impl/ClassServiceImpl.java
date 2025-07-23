@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.tracker.student.dto.request.CreateClassRequestDTO;
+import com.tracker.student.dto.request.CreateUpdateClassRequestDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
 import com.tracker.student.entity.Class;
 import com.tracker.student.exception.BadRequestException;
@@ -24,7 +24,7 @@ public class ClassServiceImpl implements ClassService {
 	private static final Logger logger = LoggerFactory.getLogger(ClassServiceImpl.class);
 
 	@Override
-	public void createClass(CreateClassRequestDTO dto) {
+	public void createClass(CreateUpdateClassRequestDTO dto) {
 		AcademicYearChecker academicYearChecker = new AcademicYearChecker();
 		Class classObject = classRepository.findByName(dto.name()).orElse(new Class());
 		if (!StringUtils.isBlank(classObject.getName())) {
@@ -52,6 +52,23 @@ public class ClassServiceImpl implements ClassService {
 		dto.setStartYear(classExit.getStartYear());
 		dto.setEndYear(classExit.getEndYear());
 		return dto;
+	}
+
+	@Override
+	public void updateClass(CreateUpdateClassRequestDTO dto, String id) {
+		Class existClass = classRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("Kelas tidak ditemukan"));
+		AcademicYearChecker academicYearChecker = new AcademicYearChecker();
+		academicYearChecker.checkAcademicYearValidity(dto.startYear(), dto.endYear());
+		try {
+			existClass.setStartYear(dto.startYear());
+			existClass.setEndYear(dto.endYear());
+			existClass.setName(dto.name());
+			classRepository.save(existClass);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new BadRequestException("gagal update kelas");
+		}
 	}
 
 }

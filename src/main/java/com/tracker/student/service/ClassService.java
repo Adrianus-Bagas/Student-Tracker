@@ -1,12 +1,14 @@
 package com.tracker.student.service;
 
-import com.tracker.student.dto.request.CreateClassRequestDTO;
+import com.tracker.student.dto.request.CreateUpdateClassRequestDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
 
 public interface ClassService {
 
-	public void createClass(CreateClassRequestDTO dto);
+	public void createClass(CreateUpdateClassRequestDTO dto);
 
 	public ClassDetailResponseDTO findClassById(String id);
+
+	public void updateClass(CreateUpdateClassRequestDTO dto, String id);
 
 }
