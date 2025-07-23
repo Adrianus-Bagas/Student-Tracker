@@ -13,5 +13,4 @@ public class ClassDetailResponseDTO {
 	private String startYear;
 	private String endYear;
 	private String name;
-	private TeacherDetailResponseDTO teacher;
 }

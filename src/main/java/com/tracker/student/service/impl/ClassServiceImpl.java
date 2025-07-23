@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.tracker.student.dto.request.CreateClassRequestDTO;
+import com.tracker.student.dto.response.ClassDetailResponseDTO;
 import com.tracker.student.entity.Class;
 import com.tracker.student.exception.BadRequestException;
 import com.tracker.student.repository.ClassRepository;
@@ -39,6 +40,18 @@ public class ClassServiceImpl implements ClassService {
 			logger.error("Failed to save class");
 			throw new BadRequestException("Gagal menambahkan kelas");
 		}
+	}
+
+	@Override
+	public ClassDetailResponseDTO findClassById(String id) {
+		Class classExit = classRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("Kelas tidak ditemukan"));
+		ClassDetailResponseDTO dto = new ClassDetailResponseDTO();
+		dto.setId(classExit.getSecureId());
+		dto.setName(classExit.getName());
+		dto.setStartYear(classExit.getStartYear());
+		dto.setEndYear(classExit.getEndYear());
+		return dto;
 	}
 
 }

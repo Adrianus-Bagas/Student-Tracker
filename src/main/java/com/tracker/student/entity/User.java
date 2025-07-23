@@ -53,10 +53,10 @@ public class User extends AbstractBaseEntity {
 
 	@Column(name = "forgot_password_code_expired_at", nullable = true)
 	private Date forgotPasswordCodeExpiredAt;
-	
+
 	@OneToOne(mappedBy = "user")
 	private Student student;
-	
+
 	@OneToOne(mappedBy = "user")
 	private Teacher teacher;
 
