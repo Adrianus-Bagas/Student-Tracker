@@ -10,4 +10,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
 	public Optional<Subject> findByName(String name);
 
+	public Optional<Subject> findBySecureId(String secureId);
+
 }

@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.tracker.student.dto.request.CreateSubjectRequestDTO;
+import com.tracker.student.dto.response.SubjectDetailResponseDTO;
+import com.tracker.student.dto.response.TeacherDetailResponseDTO;
+import com.tracker.student.dto.response.UserInfoResponseDTO;
 import com.tracker.student.entity.Subject;
 import com.tracker.student.entity.Teacher;
 import com.tracker.student.exception.BadRequestException;
@@ -46,6 +49,38 @@ public class SubjectServiceImpl implements SubjectService {
 			logger.error("Failed to save subject");
 			throw new BadRequestException("Gagal menambahkan pelajaran");
 		}
+	}
+
+	@Override
+	public SubjectDetailResponseDTO findSubjectById(String id) {
+		Subject subject = subjectRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("Pelajaran tidak ditemukan"));
+		SubjectDetailResponseDTO dto = new SubjectDetailResponseDTO();
+		dto.setId(subject.getSecureId());
+		dto.setStartYear(subject.getStartYear());
+		dto.setEndYear(subject.getEndYear());
+		dto.setName(subject.getName());
+		dto.setMinimum(subject.getMinimum());
+
+		TeacherDetailResponseDTO teacherDTO = new TeacherDetailResponseDTO();
+		teacherDTO.setId(subject.getTeacher().getSecureId());
+		teacherDTO.setStartYear(subject.getTeacher().getStartYear());
+		teacherDTO.setEndYear(subject.getTeacher().getEndYear());
+
+		UserInfoResponseDTO userDTO = new UserInfoResponseDTO();
+		userDTO.setId(subject.getTeacher().getUser().getSecureId());
+		userDTO.setStartYear(subject.getTeacher().getUser().getStartYear());
+		userDTO.setEndYear(subject.getTeacher().getUser().getEndYear());
+		userDTO.setNomorInduk(subject.getTeacher().getUser().getNomorInduk());
+		userDTO.setName(subject.getTeacher().getUser().getName());
+		userDTO.setEmail(subject.getTeacher().getUser().getEmail());
+		userDTO.setAge(subject.getTeacher().getUser().getAge());
+		userDTO.setRole(subject.getTeacher().getUser().getRole());
+
+		teacherDTO.setUser(userDTO);
+
+		dto.setTeacher(teacherDTO);
+		return dto;
 	}
 
 }
