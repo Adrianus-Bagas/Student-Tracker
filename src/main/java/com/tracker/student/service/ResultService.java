@@ -12,4 +12,6 @@ public interface ResultService {
 
 	public void updateResult(UpdateResultRequestDTO dto, String id);
 
+	public void deleteResult(String id);
+
 }

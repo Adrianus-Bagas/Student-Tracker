@@ -3,6 +3,7 @@ package com.tracker.student.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tracker.student.dto.request.CreateResultRequestDTO;
 import com.tracker.student.dto.request.UpdateResultRequestDTO;
@@ -176,6 +177,12 @@ public class ResultServiceImpl implements ResultService {
 			logger.error("Failed to update result");
 			throw new BadRequestException("Nilai tidak dapat diubah");
 		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteResult(String id) {
+		resultRepository.deleteBySecureId(id);
 	}
 
 }
