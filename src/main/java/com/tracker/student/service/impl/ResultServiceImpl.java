@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.tracker.student.dto.request.CreateResultRequestDTO;
+import com.tracker.student.dto.request.UpdateResultRequestDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
 import com.tracker.student.dto.response.ResultDetailResponseDTO;
 import com.tracker.student.dto.response.StudentDetailResponseDTO;
@@ -133,6 +134,48 @@ public class ResultServiceImpl implements ResultService {
 		resultDTO.setStudent(studentDTO);
 
 		return resultDTO;
+	}
+
+	@Override
+	public void updateResult(UpdateResultRequestDTO dto, String id) {
+		Result result = resultRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("Nilai tidak ditemukan"));
+
+		if (dto.startYear() != null && dto.endYear() != null) {
+			AcademicYearChecker academicYearChecker = new AcademicYearChecker();
+			academicYearChecker.checkAcademicYearValidity(dto.startYear(), dto.endYear());
+		}
+		try {
+			if (dto.mark() > result.getSubject().getMinimum()) {
+				result.setPassed(true);
+			} else {
+				result.setPassed(false);
+			}
+			if (dto.subjectId() != null) {
+				Subject subject = subjectRepository.findById(dto.subjectId())
+						.orElseThrow(() -> new BadRequestException("Pelajaran tidak tersedia"));
+				result.setSubject(subject);
+			}
+			if (dto.studentId() != null) {
+				Student student = studentRepository.findById(dto.studentId())
+						.orElseThrow(() -> new BadRequestException("Murid tidak tersedia"));
+				result.setStudent(student);
+			}
+			if (dto.startYear() != null)
+				result.setStartYear(dto.startYear());
+			if (dto.endYear() != null)
+				result.setEndYear(dto.endYear());
+			if (dto.mark() != null)
+				result.setMark(dto.mark());
+			if (dto.semester() != null)
+				result.setSemester(dto.semester());
+			if (dto.type() != null)
+				result.setType(dto.type());
+			resultRepository.save(result);
+		} catch (Exception e) {
+			logger.error("Failed to update result");
+			throw new BadRequestException("Nilai tidak dapat diubah");
+		}
 	}
 
 }

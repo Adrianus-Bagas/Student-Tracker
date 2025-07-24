@@ -7,11 +7,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tracker.student.dto.request.CreateResultRequestDTO;
+import com.tracker.student.dto.request.UpdateResultRequestDTO;
 import com.tracker.student.dto.response.ResultDetailResponseDTO;
 import com.tracker.student.service.ResultService;
 
@@ -31,10 +33,16 @@ public class ResultController {
 		resultService.createResult(dto);
 		return ResponseEntity.created(URI.create("/result")).build();
 	}
-	
+
 	@GetMapping("/v1/detail/{id}")
 	public ResponseEntity<ResultDetailResponseDTO> getDetailResult(@PathVariable String id) {
 		return ResponseEntity.ok(resultService.findResultById(id));
+	}
+
+	@PutMapping("/v1/update/{id}")
+	public ResponseEntity<Void> updateResult(@Valid @RequestBody UpdateResultRequestDTO dto, @PathVariable String id) {
+		resultService.updateResult(dto, id);
+		return ResponseEntity.ok().build();
 	}
 
 }

@@ -10,6 +10,6 @@ import jakarta.validation.constraints.Positive;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreateSubjectRequestDTO(@NotBlank String name, @NotBlank String startYear, @NotBlank String endYear,
-		@Min(60) @Max(70) int minimum, @Positive Long teacherId) {
+		@Min(60) @Max(70) Integer minimum, @Positive Long teacherId) {
 
 }

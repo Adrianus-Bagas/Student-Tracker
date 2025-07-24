@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record CreateResultRequestDTO(@NotBlank String startYear, @NotBlank String endYear, @PositiveOrZero float mark,
-		@Positive int semester, @NotBlank String type, @Positive Long studentId, @Positive Long subjectId) {
+public record CreateResultRequestDTO(@NotBlank String startYear, @NotBlank String endYear, @PositiveOrZero Float mark,
+		@Positive Integer semester, @NotBlank String type, @Positive Long studentId, @Positive Long subjectId) {
 
 }
