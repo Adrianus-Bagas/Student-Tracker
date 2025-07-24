@@ -12,4 +12,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
 	public Optional<Subject> findBySecureId(String secureId);
 
+	public void deleteBySecureId(String secureId);
+
 }

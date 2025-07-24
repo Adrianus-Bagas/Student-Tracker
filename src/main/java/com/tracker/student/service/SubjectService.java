@@ -12,4 +12,6 @@ public interface SubjectService {
 
 	public void updateSubject(UpdateSubjectRequestDTO dto, String id);
 
+	public void deleteSubject(String id);
+
 }

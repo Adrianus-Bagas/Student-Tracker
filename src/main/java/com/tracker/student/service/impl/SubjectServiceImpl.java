@@ -3,6 +3,7 @@ package com.tracker.student.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tracker.student.dto.request.CreateSubjectRequestDTO;
 import com.tracker.student.dto.request.UpdateSubjectRequestDTO;
@@ -113,6 +114,12 @@ public class SubjectServiceImpl implements SubjectService {
 			throw new BadRequestException("Gagal mengubah pelajaran");
 		}
 
+	}
+
+	@Override
+	@Transactional
+	public void deleteSubject(String id) {
+		subjectRepository.deleteBySecureId(id);
 	}
 
 }

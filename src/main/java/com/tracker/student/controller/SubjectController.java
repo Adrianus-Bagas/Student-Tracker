@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +44,12 @@ public class SubjectController {
 	public ResponseEntity<Void> updateSubject(@Valid @RequestBody UpdateSubjectRequestDTO dto,
 			@PathVariable String id) {
 		subjectService.updateSubject(dto, id);
+		return ResponseEntity.ok().build();
+	}
+
+	@DeleteMapping("/v1/delete/{id}")
+	public ResponseEntity<Void> deleteSubject(@PathVariable String id) {
+		subjectService.deleteSubject(id);
 		return ResponseEntity.ok().build();
 	}
 
