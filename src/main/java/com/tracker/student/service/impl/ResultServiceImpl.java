@@ -5,6 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.tracker.student.dto.request.CreateResultRequestDTO;
+import com.tracker.student.dto.response.ClassDetailResponseDTO;
+import com.tracker.student.dto.response.ResultDetailResponseDTO;
+import com.tracker.student.dto.response.StudentDetailResponseDTO;
+import com.tracker.student.dto.response.SubjectDetailResponseDTO;
+import com.tracker.student.dto.response.TeacherDetailResponseDTO;
+import com.tracker.student.dto.response.UserInfoResponseDTO;
 import com.tracker.student.entity.Result;
 import com.tracker.student.entity.Student;
 import com.tracker.student.entity.Subject;
@@ -55,6 +61,78 @@ public class ResultServiceImpl implements ResultService {
 			logger.error("Failed to save result");
 			throw new BadRequestException("Nilai tidak dapat ditambahkan");
 		}
+	}
+
+	@Override
+	public ResultDetailResponseDTO findResultById(String id) {
+		Result result = resultRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("Nilai tidak ditemukan"));
+		ResultDetailResponseDTO resultDTO = new ResultDetailResponseDTO();
+
+		resultDTO.setId(result.getSecureId());
+		resultDTO.setStartYear(result.getStartYear());
+		resultDTO.setEndYear(result.getEndYear());
+		resultDTO.setType(result.getType());
+		resultDTO.setSemester(result.getSemester());
+		resultDTO.setMark(result.getMark());
+		resultDTO.setPassed(result.isPassed());
+
+		SubjectDetailResponseDTO subjectDTO = new SubjectDetailResponseDTO();
+		subjectDTO.setId(result.getSubject().getSecureId());
+		subjectDTO.setStartYear(result.getSubject().getStartYear());
+		subjectDTO.setEndYear(result.getSubject().getEndYear());
+		subjectDTO.setName(result.getSubject().getName());
+		subjectDTO.setMinimum(result.getSubject().getMinimum());
+
+		TeacherDetailResponseDTO teacherDTO = new TeacherDetailResponseDTO();
+		teacherDTO.setId(result.getSubject().getTeacher().getSecureId());
+		teacherDTO.setStartYear(result.getSubject().getTeacher().getStartYear());
+		teacherDTO.setEndYear(result.getSubject().getTeacher().getEndYear());
+
+		UserInfoResponseDTO userDTO = new UserInfoResponseDTO();
+		userDTO.setId(result.getSubject().getTeacher().getUser().getSecureId());
+		userDTO.setStartYear(result.getSubject().getTeacher().getUser().getStartYear());
+		userDTO.setEndYear(result.getSubject().getTeacher().getUser().getEndYear());
+		userDTO.setNomorInduk(result.getSubject().getTeacher().getUser().getNomorInduk());
+		userDTO.setName(result.getSubject().getTeacher().getUser().getName());
+		userDTO.setEmail(result.getSubject().getTeacher().getUser().getEmail());
+		userDTO.setAge(result.getSubject().getTeacher().getUser().getAge());
+		userDTO.setRole(result.getSubject().getTeacher().getUser().getRole());
+
+		teacherDTO.setUser(userDTO);
+
+		subjectDTO.setTeacher(teacherDTO);
+
+		resultDTO.setSubject(subjectDTO);
+
+		StudentDetailResponseDTO studentDTO = new StudentDetailResponseDTO();
+		studentDTO.setId(result.getStudent().getSecureId());
+		studentDTO.setStartYear(result.getStudent().getStartYear());
+		studentDTO.setEndYear(result.getStudent().getEndYear());
+		studentDTO.setPromoted(result.getStudent().isPromoted());
+
+		UserInfoResponseDTO studentUserInfoResponseDTO = new UserInfoResponseDTO();
+		studentUserInfoResponseDTO.setAge(result.getStudent().getUser().getAge());
+		studentUserInfoResponseDTO.setEmail(result.getStudent().getUser().getEmail());
+		studentUserInfoResponseDTO.setEndYear(result.getStudent().getUser().getEndYear());
+		studentUserInfoResponseDTO.setId(result.getStudent().getUser().getSecureId());
+		studentUserInfoResponseDTO.setName(result.getStudent().getUser().getName());
+		studentUserInfoResponseDTO.setNomorInduk(result.getStudent().getUser().getNomorInduk());
+		studentUserInfoResponseDTO.setRole(result.getStudent().getUser().getRole());
+		studentUserInfoResponseDTO.setStartYear(result.getStudent().getUser().getStartYear());
+
+		ClassDetailResponseDTO classDetailResponseDTO = new ClassDetailResponseDTO();
+		classDetailResponseDTO.setId(result.getStudent().getStudentClass().getSecureId());
+		classDetailResponseDTO.setStartYear(result.getStudent().getStudentClass().getStartYear());
+		classDetailResponseDTO.setEndYear(result.getStudent().getStudentClass().getEndYear());
+		classDetailResponseDTO.setName(result.getStudent().getStudentClass().getName());
+
+		studentDTO.setUser(studentUserInfoResponseDTO);
+		studentDTO.setStudentClass(classDetailResponseDTO);
+
+		resultDTO.setStudent(studentDTO);
+
+		return resultDTO;
 	}
 
 }

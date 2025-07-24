@@ -7,13 +7,16 @@ import lombok.Data;
 
 @Data
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class StudentDetailResponseDTO {
-	
+public class ResultDetailResponseDTO {
+
 	private String id;
 	private String startYear;
 	private String endYear;
-	private boolean isPromoted;
-	private UserInfoResponseDTO user;
-	private ClassDetailResponseDTO studentClass;
-
+	private String type;
+	private int semester;
+	private float mark;
+	private boolean isPassed;
+	private SubjectDetailResponseDTO subject;
+	private StudentDetailResponseDTO student;
+	
 }

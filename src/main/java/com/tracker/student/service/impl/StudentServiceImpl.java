@@ -32,6 +32,9 @@ public class StudentServiceImpl implements StudentService {
 
 		Student student = studentRepository.findBySecureId(id)
 				.orElseThrow(() -> new BadRequestException("Siswa tidak ditemukan"));
+
+		StudentDetailResponseDTO dto = new StudentDetailResponseDTO();
+
 		UserInfoResponseDTO userInfoResponseDTO = new UserInfoResponseDTO();
 		userInfoResponseDTO.setAge(student.getUser().getAge());
 		userInfoResponseDTO.setEmail(student.getUser().getEmail());
@@ -48,8 +51,14 @@ public class StudentServiceImpl implements StudentService {
 		classDetailResponseDTO.setEndYear(student.getStudentClass().getEndYear());
 		classDetailResponseDTO.setName(student.getStudentClass().getName());
 
-		return new StudentDetailResponseDTO(student.getSecureId(), student.getStartYear(), student.getEndYear(),
-				student.isPromoted(), userInfoResponseDTO, classDetailResponseDTO);
+		dto.setId(student.getSecureId());
+		dto.setStartYear(student.getStartYear());
+		dto.setEndYear(student.getEndYear());
+		dto.setPromoted(student.isPromoted());
+		dto.setUser(userInfoResponseDTO);
+		dto.setStudentClass(classDetailResponseDTO);
+
+		return dto;
 	}
 
 	@Override
