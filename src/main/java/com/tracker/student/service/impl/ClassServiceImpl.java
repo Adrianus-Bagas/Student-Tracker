@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tracker.student.dto.request.CreateUpdateClassRequestDTO;
+import com.tracker.student.dto.request.CreateClassRequestDTO;
+import com.tracker.student.dto.request.UpdateClassRequestDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
 import com.tracker.student.entity.Class;
 import com.tracker.student.exception.BadRequestException;
@@ -25,7 +26,7 @@ public class ClassServiceImpl implements ClassService {
 	private static final Logger logger = LoggerFactory.getLogger(ClassServiceImpl.class);
 
 	@Override
-	public void createClass(CreateUpdateClassRequestDTO dto) {
+	public void createClass(CreateClassRequestDTO dto) {
 		AcademicYearChecker academicYearChecker = new AcademicYearChecker();
 		Class classObject = classRepository.findByName(dto.name()).orElse(new Class());
 		if (!StringUtils.isBlank(classObject.getName())) {
@@ -56,15 +57,20 @@ public class ClassServiceImpl implements ClassService {
 	}
 
 	@Override
-	public void updateClass(CreateUpdateClassRequestDTO dto, String id) {
+	public void updateClass(UpdateClassRequestDTO dto, String id) {
 		Class existClass = classRepository.findBySecureId(id)
 				.orElseThrow(() -> new BadRequestException("Kelas tidak ditemukan"));
-		AcademicYearChecker academicYearChecker = new AcademicYearChecker();
-		academicYearChecker.checkAcademicYearValidity(dto.startYear(), dto.endYear());
+		if (dto.startYear() != null && dto.endYear() != null) {
+			AcademicYearChecker academicYearChecker = new AcademicYearChecker();
+			academicYearChecker.checkAcademicYearValidity(dto.startYear(), dto.endYear());
+		}
 		try {
-			existClass.setStartYear(dto.startYear());
-			existClass.setEndYear(dto.endYear());
-			existClass.setName(dto.name());
+			if (dto.startYear() != null)
+				existClass.setStartYear(dto.startYear());
+			if (dto.endYear() != null)
+				existClass.setEndYear(dto.endYear());
+			if (dto.name() != null)
+				existClass.setName(dto.name());
 			classRepository.save(existClass);
 		} catch (Exception e) {
 			logger.error(e.getMessage());

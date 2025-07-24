@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tracker.student.dto.request.CreateUpdateClassRequestDTO;
+import com.tracker.student.dto.request.CreateClassRequestDTO;
+import com.tracker.student.dto.request.UpdateClassRequestDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
 import com.tracker.student.service.ClassService;
 
@@ -29,7 +30,7 @@ public class ClassController {
 	private final ClassService classService;
 
 	@PostMapping("/v1/create")
-	public ResponseEntity<Void> createClass(@Valid @RequestBody CreateUpdateClassRequestDTO dto) {
+	public ResponseEntity<Void> createClass(@Valid @RequestBody CreateClassRequestDTO dto) {
 		classService.createClass(dto);
 		return ResponseEntity.created(URI.create("/class")).build();
 	}
@@ -40,8 +41,7 @@ public class ClassController {
 	}
 
 	@PutMapping("/v1/update/{id}")
-	public ResponseEntity<Void> updateClass(@Valid @RequestBody CreateUpdateClassRequestDTO dto,
-			@PathVariable String id) {
+	public ResponseEntity<Void> updateClass(@Valid @RequestBody UpdateClassRequestDTO dto, @PathVariable String id) {
 		classService.updateClass(dto, id);
 		return ResponseEntity.ok().build();
 	}
