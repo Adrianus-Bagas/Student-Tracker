@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.tracker.student.dto.request.CreateSubjectRequestDTO;
+import com.tracker.student.dto.request.UpdateSubjectRequestDTO;
 import com.tracker.student.dto.response.SubjectDetailResponseDTO;
 import com.tracker.student.dto.response.TeacherDetailResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -81,6 +82,37 @@ public class SubjectServiceImpl implements SubjectService {
 
 		dto.setTeacher(teacherDTO);
 		return dto;
+	}
+
+	@Override
+	public void updateSubject(UpdateSubjectRequestDTO dto, String id) {
+		Subject subject = subjectRepository.findBySecureId(id)
+				.orElseThrow(() -> new BadRequestException("Pelajaran tidak ditemukan"));
+
+		if (dto.startYear() != null && dto.endYear() != null) {
+			AcademicYearChecker academicYearChecker = new AcademicYearChecker();
+			academicYearChecker.checkAcademicYearValidity(dto.startYear(), dto.endYear());
+		}
+		try {
+			if (dto.name() != null)
+				subject.setName(dto.name());
+			if (dto.startYear() != null)
+				subject.setStartYear(dto.startYear());
+			if (dto.endYear() != null)
+				subject.setEndYear(dto.endYear());
+			if (dto.minimum() != 0)
+				subject.setMinimum(dto.minimum());
+			if (dto.teacherId() != null) {
+				Teacher teacher = teacherRepository.findById(dto.teacherId())
+						.orElseThrow(() -> new BadRequestException("Guru tidak tersedia"));
+				subject.setTeacher(teacher);
+			}
+			subjectRepository.save(subject);
+		} catch (Exception e) {
+			logger.error("Failed to update subject");
+			throw new BadRequestException("Gagal mengubah pelajaran");
+		}
+
 	}
 
 }
