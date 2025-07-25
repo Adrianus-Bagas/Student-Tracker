@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tracker.student.dto.request.ChangePasswordFromProfileRequestDTO;
+import com.tracker.student.dto.request.FilterSearchRequestDTO;
+import com.tracker.student.dto.request.SearchCriteria;
 import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -22,10 +24,10 @@ import com.tracker.student.entity.User;
 import com.tracker.student.exception.BadRequestException;
 import com.tracker.student.repository.UserRepository;
 import com.tracker.student.service.UserService;
+import com.tracker.student.specifications.builder.UserSpecificationBuilder;
 import com.tracker.student.util.AcademicYearChecker;
 import com.tracker.student.util.PaginationUtil;
 
-import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -44,19 +46,27 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public PageResultResponseDTO<UserListResponseDTO> findUserList(int page, int limit, String sortBy, String direction,
-			String name) {
-		name = StringUtils.isBlank(name) ? "%" : name + "%";
+			FilterSearchRequestDTO dto) {
+		List<SearchCriteria> criteriaList = dto.searchCriteriaList();
+		UserSpecificationBuilder builder = new UserSpecificationBuilder();
+		if (criteriaList != null) {
+			criteriaList.forEach(x -> {
+				x.setDataOption(dto.dataOption());
+				builder.with(x);
+			});
+		}
+		logger.info(dto.dataOption());
 		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
 		Pageable pageable = PageRequest.of(page, limit, sort);
-		Page<User> pageResult = userRepository.findByNameLikeIgnoreCase(name, pageable);
+		Page<User> pageResult = userRepository.findAll(builder.build(), pageable);
 		List<UserListResponseDTO> dtos = pageResult.stream().map((user) -> {
-			UserListResponseDTO dto = new UserListResponseDTO();
-			dto.setUserId(user.getSecureId());
-			dto.setRole(user.getRole());
-			dto.setNomorInduk(user.getNomorInduk());
-			dto.setName(user.getName());
-			dto.setEmail(user.getEmail());
-			return dto;
+			UserListResponseDTO userDto = new UserListResponseDTO();
+			userDto.setUserId(user.getSecureId());
+			userDto.setRole(user.getRole());
+			userDto.setNomorInduk(user.getNomorInduk());
+			userDto.setName(user.getName());
+			userDto.setEmail(user.getEmail());
+			return userDto;
 		}).collect(Collectors.toList());
 		return PaginationUtil.createPageResultDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
 	}

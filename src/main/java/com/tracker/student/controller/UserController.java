@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tracker.student.dto.request.ChangePasswordFromProfileRequestDTO;
+import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -32,14 +33,14 @@ public class UserController {
 
 	private final UserService userService;
 
-	@GetMapping("/v1/pagelist")
+	@PostMapping("/v1/pagelist")
 	public ResponseEntity<PageResultResponseDTO<UserListResponseDTO>> findUserList(
 			@RequestParam(name = "pages", required = true, defaultValue = "0") int pages,
 			@RequestParam(name = "limit", required = true, defaultValue = "10") int limit,
 			@RequestParam(name = "sortBy", required = true, defaultValue = "name") String sortBy,
 			@RequestParam(name = "direction", required = true, defaultValue = "asc") String direction,
-			@RequestParam(name = "name", required = false) String name) {
-		return ResponseEntity.ok(userService.findUserList(pages, limit, sortBy, direction, name));
+			@RequestBody FilterSearchRequestDTO dto) {
+		return ResponseEntity.ok(userService.findUserList(pages, limit, sortBy, direction, dto));
 	}
 
 	@GetMapping("/v1/{id}")

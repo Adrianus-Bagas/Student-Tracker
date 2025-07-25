@@ -1,6 +1,7 @@
 package com.tracker.student.service;
 
 import com.tracker.student.dto.request.ChangePasswordFromProfileRequestDTO;
+import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.UpdateUserRequestDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -12,7 +13,7 @@ public interface UserService {
 	public User findByNomorInduk(String nomorInduk);
 
 	public PageResultResponseDTO<UserListResponseDTO> findUserList(int page, int limit, String sortBy, String direction,
-			String name);
+			FilterSearchRequestDTO dto);
 
 	public UserInfoResponseDTO findUserBySecureId(String secureId);
 
