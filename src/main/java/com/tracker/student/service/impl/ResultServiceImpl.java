@@ -1,16 +1,28 @@
 package com.tracker.student.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tracker.student.dto.request.CreateResultRequestDTO;
+import com.tracker.student.dto.request.FilterSearchRequestDTO;
+import com.tracker.student.dto.request.SearchCriteria;
 import com.tracker.student.dto.request.UpdateResultRequestDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
+import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.ResultDetailResponseDTO;
+import com.tracker.student.dto.response.ResultListResponseDTO;
 import com.tracker.student.dto.response.StudentDetailResponseDTO;
 import com.tracker.student.dto.response.SubjectDetailResponseDTO;
+import com.tracker.student.dto.response.SubjectDetailResultResponseDTO;
 import com.tracker.student.dto.response.TeacherDetailResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
 import com.tracker.student.entity.Result;
@@ -21,7 +33,9 @@ import com.tracker.student.repository.ResultRepository;
 import com.tracker.student.repository.StudentRepository;
 import com.tracker.student.repository.SubjectRepository;
 import com.tracker.student.service.ResultService;
+import com.tracker.student.specifications.builder.StudentResultSpecificationBuilder;
 import com.tracker.student.util.AcademicYearChecker;
+import com.tracker.student.util.PaginationUtil;
 
 import lombok.AllArgsConstructor;
 
@@ -183,6 +197,43 @@ public class ResultServiceImpl implements ResultService {
 	@Transactional
 	public void deleteResult(String id) {
 		resultRepository.deleteBySecureId(id);
+	}
+
+	@Override
+	public PageResultResponseDTO<ResultListResponseDTO> findStudentResultList(int page, int limit, String sortBy,
+			String direction, FilterSearchRequestDTO dto) {
+		List<SearchCriteria> criteriaList = dto.searchCriteriaList();
+		StudentResultSpecificationBuilder builder = new StudentResultSpecificationBuilder();
+		if (criteriaList != null) {
+			criteriaList.forEach(x -> {
+				x.setDataOption(dto.dataOption());
+				builder.with(x);
+			});
+		}
+		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
+		Pageable pageable = PageRequest.of(page, limit, sort);
+		Page<Result> pageResult = resultRepository.findAll(builder.build(), pageable);
+		List<ResultListResponseDTO> dtos = pageResult.stream().map((result) -> {
+			ResultListResponseDTO resultDto = new ResultListResponseDTO();
+			resultDto.setId(result.getSecureId());
+			resultDto.setStartYear(result.getStartYear());
+			resultDto.setEndYear(result.getEndYear());
+			resultDto.setSemester(result.getSemester());
+			resultDto.setMark(result.getMark());
+			resultDto.setType(result.getType());
+			resultDto.setIsPassed(result.isPassed());
+
+			SubjectDetailResultResponseDTO subjectDto = new SubjectDetailResultResponseDTO();
+			subjectDto.setId(result.getSubject().getSecureId());
+			subjectDto.setStartYear(result.getSubject().getStartYear());
+			subjectDto.setEndYear(result.getSubject().getEndYear());
+			subjectDto.setName(result.getSubject().getName());
+			subjectDto.setMinimum(result.getSubject().getMinimum());
+
+			resultDto.setSubject(subjectDto);
+			return resultDto;
+		}).collect(Collectors.toList());
+		return PaginationUtil.createPageResultDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
 	}
 
 }
