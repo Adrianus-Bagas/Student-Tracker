@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tracker.student.dto.request.CreateClassRequestDTO;
+import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.UpdateClassRequestDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
+import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.service.ClassService;
 
 import jakarta.validation.Valid;
@@ -50,6 +53,16 @@ public class ClassController {
 	public ResponseEntity<Void> deleteClass(@PathVariable String id) {
 		classService.deleteClass(id);
 		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/v1/pagelist")
+	public ResponseEntity<PageResultResponseDTO<ClassDetailResponseDTO>> findClassList(
+			@RequestParam(name = "pages", required = true, defaultValue = "0") int pages,
+			@RequestParam(name = "limit", required = true, defaultValue = "10") int limit,
+			@RequestParam(name = "sortBy", required = true, defaultValue = "name") String sortBy,
+			@RequestParam(name = "direction", required = true, defaultValue = "asc") String direction,
+			@RequestBody FilterSearchRequestDTO dto) {
+		return ResponseEntity.ok(classService.findClassList(pages, limit, sortBy, direction, dto));
 	}
 
 }
