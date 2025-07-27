@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tracker.student.dto.request.CreateSubjectRequestDTO;
+import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.UpdateSubjectRequestDTO;
+import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.SubjectDetailResponseDTO;
 import com.tracker.student.service.SubjectService;
 
@@ -51,6 +54,16 @@ public class SubjectController {
 	public ResponseEntity<Void> deleteSubject(@PathVariable String id) {
 		subjectService.deleteSubject(id);
 		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/v1/pagelist")
+	public ResponseEntity<PageResultResponseDTO<SubjectDetailResponseDTO>> findSubjectList(
+			@RequestParam(name = "pages", required = true, defaultValue = "0") int pages,
+			@RequestParam(name = "limit", required = true, defaultValue = "10") int limit,
+			@RequestParam(name = "sortBy", required = true, defaultValue = "name") String sortBy,
+			@RequestParam(name = "direction", required = true, defaultValue = "asc") String direction,
+			@RequestBody FilterSearchRequestDTO dto) {
+		return ResponseEntity.ok(subjectService.findSubjectList(pages, limit, sortBy, direction, dto));
 	}
 
 }

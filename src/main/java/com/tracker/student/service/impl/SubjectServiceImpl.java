@@ -1,12 +1,22 @@
 package com.tracker.student.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tracker.student.dto.request.CreateSubjectRequestDTO;
+import com.tracker.student.dto.request.FilterSearchRequestDTO;
+import com.tracker.student.dto.request.SearchCriteria;
 import com.tracker.student.dto.request.UpdateSubjectRequestDTO;
+import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.SubjectDetailResponseDTO;
 import com.tracker.student.dto.response.TeacherDetailResponseDTO;
 import com.tracker.student.dto.response.UserInfoResponseDTO;
@@ -16,7 +26,9 @@ import com.tracker.student.exception.BadRequestException;
 import com.tracker.student.repository.SubjectRepository;
 import com.tracker.student.repository.TeacherRepository;
 import com.tracker.student.service.SubjectService;
+import com.tracker.student.specifications.builder.SubjectSpecificationBuilder;
 import com.tracker.student.util.AcademicYearChecker;
+import com.tracker.student.util.PaginationUtil;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
@@ -120,6 +132,52 @@ public class SubjectServiceImpl implements SubjectService {
 	@Transactional
 	public void deleteSubject(String id) {
 		subjectRepository.deleteBySecureId(id);
+	}
+
+	@Override
+	public PageResultResponseDTO<SubjectDetailResponseDTO> findSubjectList(int page, int limit, String sortBy,
+			String direction, FilterSearchRequestDTO dto) {
+		List<SearchCriteria> criteriaList = dto.searchCriteriaList();
+		SubjectSpecificationBuilder builder = new SubjectSpecificationBuilder();
+		if (criteriaList != null) {
+			criteriaList.forEach(x -> {
+				x.setDataOption(dto.dataOption());
+				builder.with(x);
+			});
+		}
+		Sort sort = Sort.by(new Sort.Order(PaginationUtil.getSortBy(direction), sortBy));
+		Pageable pageable = PageRequest.of(page, limit, sort);
+		Page<Subject> pageResult = subjectRepository.findAll(builder.build(), pageable);
+		List<SubjectDetailResponseDTO> dtos = pageResult.stream().map((subject) -> {
+			SubjectDetailResponseDTO subjectDto = new SubjectDetailResponseDTO();
+			subjectDto.setId(subject.getSecureId());
+			subjectDto.setStartYear(subject.getStartYear());
+			subjectDto.setEndYear(subject.getEndYear());
+			subjectDto.setName(subject.getName());
+			subjectDto.setMinimum(subject.getMinimum());
+
+			TeacherDetailResponseDTO teacherDTO = new TeacherDetailResponseDTO();
+			teacherDTO.setId(subject.getTeacher().getSecureId());
+			teacherDTO.setStartYear(subject.getTeacher().getStartYear());
+			teacherDTO.setEndYear(subject.getTeacher().getEndYear());
+
+			UserInfoResponseDTO userDTO = new UserInfoResponseDTO();
+			userDTO.setId(subject.getTeacher().getUser().getSecureId());
+			userDTO.setStartYear(subject.getTeacher().getUser().getStartYear());
+			userDTO.setEndYear(subject.getTeacher().getUser().getEndYear());
+			userDTO.setNomorInduk(subject.getTeacher().getUser().getNomorInduk());
+			userDTO.setName(subject.getTeacher().getUser().getName());
+			userDTO.setEmail(subject.getTeacher().getUser().getEmail());
+			userDTO.setAge(subject.getTeacher().getUser().getAge());
+			userDTO.setRole(subject.getTeacher().getUser().getRole());
+
+			teacherDTO.setUser(userDTO);
+
+			subjectDto.setTeacher(teacherDTO);
+
+			return subjectDto;
+		}).collect(Collectors.toList());
+		return PaginationUtil.createPageResultDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
 	}
 
 }
