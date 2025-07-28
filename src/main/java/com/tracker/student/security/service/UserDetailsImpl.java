@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tracker.student.constants.Roles;
 import com.tracker.student.entity.User;
 
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class UserDetailsImpl implements UserDetails {
 	private String name;
 	private int age;
 	@JsonIgnore
-	private String role;
+	private Roles role;
 
 	public static UserDetailsImpl build(User user) {
 		return new UserDetailsImpl(user.getNomorInduk(), user.getPassword(), user.getEmail(), user.getName(),
@@ -36,8 +37,8 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
-		if (StringUtils.hasText(this.role)) {
-			String[] split_role = this.role.replaceAll(" ", "").split(",");
+		if (StringUtils.hasText(this.role.toString())) {
+			String[] split_role = this.role.toString().replaceAll(" ", "").split(",");
 			for (String i : split_role) {
 				authorities.add(new SimpleGrantedAuthority(i));
 			}

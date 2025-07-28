@@ -3,8 +3,12 @@ package com.tracker.student.entity;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.tracker.student.constants.ResultTypes;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,8 +42,9 @@ public class Result extends AbstractBaseEntity {
 	@Column(name = "semester", nullable = false)
 	private int semester;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "type", nullable = false)
-	private String type;
+	private ResultTypes type;
 
 	@ManyToOne
 	@JoinColumn(name = "student_id", nullable = false, referencedColumnName = "id")

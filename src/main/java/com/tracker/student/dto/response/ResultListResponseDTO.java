@@ -1,5 +1,7 @@
 package com.tracker.student.dto.response;
 
+import com.tracker.student.constants.ResultTypes;
+
 import lombok.Data;
 
 @Data
@@ -10,7 +12,7 @@ public class ResultListResponseDTO {
 	private String endYear;
 	private Integer semester;
 	private Float mark;
-	private String type;
+	private ResultTypes type;
 	private Boolean isPassed;
 	private SubjectDetailResultResponseDTO subject;
 

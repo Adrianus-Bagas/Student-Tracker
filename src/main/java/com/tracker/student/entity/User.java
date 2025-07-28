@@ -5,8 +5,12 @@ import java.util.Date;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.tracker.student.constants.Roles;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,8 +49,9 @@ public class User extends AbstractBaseEntity {
 	@Column(name = "age", nullable = false)
 	private int age;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false)
-	private String role;
+	private Roles role;
 
 	@Column(name = "forgot_password_code", nullable = true, unique = true)
 	private String forgotPasswordCode;

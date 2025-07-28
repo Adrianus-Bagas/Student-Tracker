@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.tracker.student.config.ApplicationProperties;
+import com.tracker.student.constants.Roles;
 import com.tracker.student.dto.request.ChangePasswordFromEmailDTO;
 import com.tracker.student.dto.request.ForgotPasswordRequestDTO;
 import com.tracker.student.dto.request.LoginRequestDTO;
@@ -75,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
 			user.setStartYear(dto.startYear());
 			user.setEndYear(dto.endYear());
 			userRepository.save(user);
-			if (dto.role().equalsIgnoreCase("TEACHER")) {
+			if (dto.role() == Roles.TEACHER) {
 				Teacher teacher = new Teacher();
 				Class classObject = classRepository.findById(dto.classId())
 						.orElseThrow(() -> new BadRequestException("Kelas tidak tersedia"));
@@ -85,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
 				teacher.setTeacherClass(classObject);
 				teacherRepository.save(teacher);
 			}
-			if (dto.role().equalsIgnoreCase("STUDENT")) {
+			if (dto.role() == Roles.STUDENT) {
 				Student student = new Student();
 				Class classObject = classRepository.findById(dto.classId())
 						.orElseThrow(() -> new BadRequestException("Kelas tidak tersedia"));
