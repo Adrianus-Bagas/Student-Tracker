@@ -6,6 +6,6 @@ import com.itextpdf.text.DocumentException;
 
 public interface PdfGeneratorService {
 
-	public ByteArrayOutputStream generatePdf() throws DocumentException;
+	public ByteArrayOutputStream generatePdf(String studentId) throws DocumentException;
 
 }

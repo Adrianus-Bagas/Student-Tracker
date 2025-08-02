@@ -71,9 +71,9 @@ public class ResultController {
 		return ResponseEntity.ok(resultService.findStudentResultList(pages, limit, sortBy, direction, dto));
 	}
 
-	@GetMapping("/v1/download-report")
-	public ResponseEntity<byte[]> generatePdf() throws DocumentException {
-		ByteArrayOutputStream pdfStream = pdfGeneratorService.generatePdf();
+	@GetMapping("/v1/download-report/{id}")
+	public ResponseEntity<byte[]> generatePdf(@PathVariable String id) throws DocumentException {
+		ByteArrayOutputStream pdfStream = pdfGeneratorService.generatePdf(id);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_PDF);
