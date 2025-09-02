@@ -3,6 +3,10 @@ package com.tracker.student.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -18,12 +22,16 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.tracker.student.constants.ResultTypes;
+import com.tracker.student.entity.Result;
 import com.tracker.student.entity.Student;
+import com.tracker.student.entity.Subject;
 import com.tracker.student.entity.Teacher;
 import com.tracker.student.exception.BadRequestException;
 import com.tracker.student.repository.StudentRepository;
 import com.tracker.student.repository.TeacherRepository;
 import com.tracker.student.service.PdfGeneratorService;
+import com.tracker.student.util.CalculateFinalScore;
 
 import lombok.AllArgsConstructor;
 
@@ -40,6 +48,39 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 				.orElseThrow(() -> new BadRequestException("Siswa tidak ditemukan"));
 		Teacher teacher = teacherRepository.findByTeacherClass(student.getStudentClass())
 				.orElseThrow(() -> new BadRequestException("Guru tidak ditemukan"));
+		List<Subject> subjects = student.getResults().stream().map((result) -> {
+			return result.getSubject();
+		}).distinct().collect(Collectors.toList());
+
+		Map<String, Integer> mappedSubjects = new HashMap<>();
+
+		for (int i = 0; i < subjects.size(); i++) {
+			final int innerI = i;
+			List<Result> results = student.getResults().stream()
+					.filter(result -> result.getSubject().getId() == subjects.get(innerI).getId())
+					.collect(Collectors.toList());
+			List<Float> taskScores = results.stream().filter(result -> result.getType() == ResultTypes.TUGAS)
+					.map((result) -> {
+						return result.getMark();
+					}).collect(Collectors.toList());
+			List<Float> quizScores = results.stream().filter(result -> result.getType() == ResultTypes.KUIS)
+					.map((result) -> {
+						return result.getMark();
+					}).collect(Collectors.toList());
+			List<Float> midtermScores = results.stream().filter(result -> result.getType() == ResultTypes.UTS)
+					.map((result) -> {
+						return result.getMark();
+					}).collect(Collectors.toList());
+			List<Float> finalTermScores = results.stream().filter(result -> result.getType() == ResultTypes.UAS)
+					.map((result) -> {
+						return result.getMark();
+					}).collect(Collectors.toList());
+			CalculateFinalScore calculateFinalScore = new CalculateFinalScore();
+			float finalScore = calculateFinalScore.getFinalScore(taskScores, quizScores, midtermScores,
+					finalTermScores);
+			mappedSubjects.put(subjects.get(i).getName(), Math.round(finalScore));
+		}
+
 		Document document = new Document(PageSize.B5);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		PdfWriter.getInstance(document, outputStream);
@@ -59,9 +100,9 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 		table.addCell(new Phrase("Nilai Akhir",
 				FontFactory.getFont(FontFactory.defaultEncoding, 12, Font.BOLD, new BaseColor(0, 0, 0))));
 
-		for (int i = 1; i <= student.getResults().size(); i++) {
-			table.addCell(student.getResults().get(i - 1).getSubject().getName());
-			table.addCell(String.valueOf(student.getResults().get(i - 1).getMark()));
+		for (int i = 1; i <= subjects.size(); i++) {
+			table.addCell(subjects.get(i - 1).getName());
+			table.addCell(String.valueOf(mappedSubjects.get(subjects.get(i - 1).getName())));
 		}
 
 		Paragraph teacherClass = new Paragraph("Tertanda Wali Kelas");

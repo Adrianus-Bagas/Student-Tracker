@@ -1,5 +1,7 @@
 package com.tracker.student.entity;
 
+import java.util.Objects;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -53,4 +55,24 @@ public class Result extends AbstractBaseEntity {
 	@ManyToOne
 	@JoinColumn(name = "subject_id", nullable = false, referencedColumnName = "id")
 	private Subject subject;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Result result = (Result) obj;
+		return id == result.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 }

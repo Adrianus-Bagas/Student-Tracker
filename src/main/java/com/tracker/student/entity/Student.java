@@ -1,6 +1,7 @@
 package com.tracker.student.entity;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -46,5 +47,25 @@ public class Student extends AbstractBaseEntity {
 
 	@OneToMany(mappedBy = "student")
 	private List<Result> results;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Student student = (Student) obj;
+		return id == student.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 
 }
