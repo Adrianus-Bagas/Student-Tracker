@@ -1,5 +1,6 @@
 package com.tracker.student.service;
 
+import com.tracker.student.dto.request.CalculateFinalScoreRequestDTO;
 import com.tracker.student.dto.request.CreateResultRequestDTO;
 import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.UpdateResultRequestDTO;
@@ -19,5 +20,7 @@ public interface ResultService {
 
 	public PageResultResponseDTO<ResultListResponseDTO> findStudentResultList(int page, int limit, String sortBy,
 			String direction, FilterSearchRequestDTO dto);
+
+	public Integer calculateFinalScore(CalculateFinalScoreRequestDTO dto);
 
 }

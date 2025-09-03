@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.itextpdf.text.DocumentException;
+import com.tracker.student.dto.request.CalculateFinalScoreRequestDTO;
 import com.tracker.student.dto.request.CreateResultRequestDTO;
 import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.UpdateResultRequestDTO;
@@ -81,6 +82,11 @@ public class ResultController {
 		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
 		return new ResponseEntity<>(pdfStream.toByteArray(), headers, HttpStatus.OK);
+	}
+
+	@PostMapping("/v1/calculate-final-score")
+	public ResponseEntity<Integer> calculateFinalScore(@Valid @RequestBody CalculateFinalScoreRequestDTO dto) {
+		return ResponseEntity.ok(resultService.calculateFinalScore(dto));
 	}
 
 }

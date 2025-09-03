@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tracker.student.dto.request.CalculateFinalScoreRequestDTO;
 import com.tracker.student.dto.request.CreateResultRequestDTO;
 import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.SearchCriteria;
@@ -35,6 +36,7 @@ import com.tracker.student.repository.SubjectRepository;
 import com.tracker.student.service.ResultService;
 import com.tracker.student.specifications.builder.StudentResultSpecificationBuilder;
 import com.tracker.student.util.AcademicYearChecker;
+import com.tracker.student.util.CalculateFinalScore;
 import com.tracker.student.util.PaginationUtil;
 
 import lombok.AllArgsConstructor;
@@ -234,6 +236,14 @@ public class ResultServiceImpl implements ResultService {
 			return resultDto;
 		}).collect(Collectors.toList());
 		return PaginationUtil.createPageResultDTO(dtos, pageResult.getTotalElements(), pageResult.getTotalPages());
+	}
+
+	@Override
+	public Integer calculateFinalScore(CalculateFinalScoreRequestDTO dto) {
+		CalculateFinalScore calculateFinalScore = new CalculateFinalScore();
+		float finalScore = calculateFinalScore.getFinalScore(dto.taskScores(), dto.quizScores(), dto.midtermScores(),
+				dto.finaltermScores());
+		return Math.round(finalScore);
 	}
 
 }
