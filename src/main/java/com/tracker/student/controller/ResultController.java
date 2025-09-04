@@ -22,6 +22,7 @@ import com.tracker.student.dto.request.CalculateFinalScoreRequestDTO;
 import com.tracker.student.dto.request.CreateResultRequestDTO;
 import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.UpdateResultRequestDTO;
+import com.tracker.student.dto.response.CalculateFinalScoreResponseDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.ResultDetailResponseDTO;
 import com.tracker.student.dto.response.ResultListResponseDTO;
@@ -85,7 +86,8 @@ public class ResultController {
 	}
 
 	@PostMapping("/v1/calculate-final-score")
-	public ResponseEntity<Integer> calculateFinalScore(@Valid @RequestBody CalculateFinalScoreRequestDTO dto) {
+	public ResponseEntity<CalculateFinalScoreResponseDTO> calculateFinalScore(
+			@Valid @RequestBody CalculateFinalScoreRequestDTO dto) {
 		return ResponseEntity.ok(resultService.calculateFinalScore(dto));
 	}
 

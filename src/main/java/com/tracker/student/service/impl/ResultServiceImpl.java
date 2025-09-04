@@ -17,6 +17,7 @@ import com.tracker.student.dto.request.CreateResultRequestDTO;
 import com.tracker.student.dto.request.FilterSearchRequestDTO;
 import com.tracker.student.dto.request.SearchCriteria;
 import com.tracker.student.dto.request.UpdateResultRequestDTO;
+import com.tracker.student.dto.response.CalculateFinalScoreResponseDTO;
 import com.tracker.student.dto.response.ClassDetailResponseDTO;
 import com.tracker.student.dto.response.PageResultResponseDTO;
 import com.tracker.student.dto.response.ResultDetailResponseDTO;
@@ -239,11 +240,16 @@ public class ResultServiceImpl implements ResultService {
 	}
 
 	@Override
-	public Integer calculateFinalScore(CalculateFinalScoreRequestDTO dto) {
+	public CalculateFinalScoreResponseDTO calculateFinalScore(CalculateFinalScoreRequestDTO dto) {
+		Subject subject = subjectRepository.findBySecureId(dto.subjectId())
+				.orElseThrow(() -> new BadRequestException("Pelajaran tidak ditemukan"));
 		CalculateFinalScore calculateFinalScore = new CalculateFinalScore();
 		float finalScore = calculateFinalScore.getFinalScore(dto.taskScores(), dto.quizScores(), dto.midtermScores(),
 				dto.finaltermScores());
-		return Math.round(finalScore);
+		CalculateFinalScoreResponseDTO finalScoreDto = new CalculateFinalScoreResponseDTO();
+		finalScoreDto.setFinalScore(Math.round(finalScore));
+		finalScoreDto.setPassed(Math.round(finalScore) > subject.getMinimum() ? true : false);
+		return finalScoreDto;
 	}
 
 }
