@@ -247,8 +247,10 @@ public class ResultServiceImpl implements ResultService {
 		float finalScore = calculateFinalScore.getFinalScore(dto.taskScores(), dto.quizScores(), dto.midtermScores(),
 				dto.finaltermScores());
 		CalculateFinalScoreResponseDTO finalScoreDto = new CalculateFinalScoreResponseDTO();
+
+		boolean isPassed = Math.round(finalScore) > subject.getMinimum() ? true : false;
 		finalScoreDto.setFinalScore(Math.round(finalScore));
-		finalScoreDto.setPassed(Math.round(finalScore) > subject.getMinimum() ? true : false);
+		finalScoreDto.setPassed(isPassed);
 		return finalScoreDto;
 	}
 
